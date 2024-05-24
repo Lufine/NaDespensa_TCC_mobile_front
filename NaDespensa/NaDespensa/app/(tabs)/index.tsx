@@ -16,6 +16,7 @@ const App: React.FC = () => {
     loadUsers();
   }, []);
 
+  
   const loadUsers = async () => {
     try {
       // Ale altera esse IP e o de baixo para o IP da sua máquina
@@ -26,7 +27,8 @@ const App: React.FC = () => {
       console.error(error);
     }
   };
-
+  
+  //Ale, pra enviar pro meu back você segue essa lógica:
   const handleAddUser = async () => {
     try {
       await fetch('http://192.168.24.17:3000/users', {
