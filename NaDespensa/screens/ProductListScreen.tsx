@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 const ProductListScreen = ({ route, navigation }) => {
   const { userId } = route.params;
@@ -49,11 +50,25 @@ const ProductListScreen = ({ route, navigation }) => {
     );
   };
 
+  const getItemStyle = (expiryDate) => {
+    const today = dayjs();
+    const expiry = dayjs(expiryDate);
+    const diffDays = expiry.diff(today, 'day');
+
+    if (diffDays < 0) {
+      return styles.expiredItem;
+    } else if (diffDays <= 5) {
+      return styles.warningItem;
+    } else {
+      return styles.item;
+    }
+  };
+
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
+    <View style={getItemStyle(item.expiry_date)}>
       <Text>Nome: {item.name}</Text>
       <Text>Quantidade: {item.quantity}</Text>
-      <Text>Data de Validade: {item.expiry_date.split('-').reverse().join('/')}</Text>
+      <Text>Data de Validade: {dayjs(item.expiry_date).format('DD/MM/YYYY')}</Text>
       <View style={styles.buttonContainer}>
         <Button title="Editar" onPress={() => handleEditProduct(item)} />
         <Button title="Excluir" onPress={() => handleDeleteProduct(item.id)} color="red" />
@@ -74,6 +89,12 @@ const ProductListScreen = ({ route, navigation }) => {
       >
         <Text style={styles.addButtonText}>Adicionar Produto</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.recipesButton}
+        onPress={() => navigation.navigate('Recipes', { userId })}
+      >
+        <Text style={styles.recipesButtonText}>Ver Receitas</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -88,6 +109,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
+  warningItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#f7ff66',
+  },
+  expiredItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#f06451',
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -101,6 +134,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   addButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  recipesButton: {
+    backgroundColor: '#28a745',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  recipesButtonText: {
     color: '#fff',
     fontSize: 16,
   },

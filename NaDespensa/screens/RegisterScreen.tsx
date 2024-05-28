@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 
 const RegisterScreen = ({ navigation }) => {
@@ -7,14 +7,27 @@ const RegisterScreen = ({ navigation }) => {
   const [idade, setIdade] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [telefone, setTelefone] = useState('');
 
   const handleRegister = async () => {
+    if (!nome || !idade || !email || !senha || !telefone) {
+      Alert.alert('Erro', 'Todos os campos são obrigatórios');
+      return;
+    }
+
     try {
-      const response = await axios.post('http://192.168.24.17:3000/register', { nome, idade: parseInt(idade), email, senha });
+      const response = await axios.post('http://192.168.24.17:3000/register', {
+        nome,
+        idade,
+        email,
+        senha,
+        telefone,
+      });
+
       if (response.data.success) {
         navigation.navigate('Login');
       } else {
-        alert('Erro ao registrar');
+        Alert.alert('Erro', 'Não foi possível registrar. Tente novamente.');
       }
     } catch (error) {
       console.error(error);
@@ -52,6 +65,13 @@ const RegisterScreen = ({ navigation }) => {
         onChangeText={setSenha}
         style={styles.input}
         secureTextEntry
+      />
+      <Text>Telefone</Text>
+      <TextInput
+        placeholder="Telefone"
+        value={telefone}
+        onChangeText={setTelefone}
+        style={styles.input}
       />
       <Button title="Registrar" onPress={handleRegister} />
     </View>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
+import { format, parse, isValid } from 'date-fns';
 
 const AddProductScreen = ({ route, navigation }) => {
   const [name, setName] = useState('');
@@ -9,13 +10,30 @@ const AddProductScreen = ({ route, navigation }) => {
 
   const { userId } = route.params;
 
+  const validateDate = (date) => {
+    const parsedDate1 = parse(date, 'dd-MM-yyyy', new Date());
+    const parsedDate2 = parse(date, 'dd/MM/yyyy', new Date());
+    if (isValid(parsedDate1)) {
+      return format(parsedDate1, 'yyyy-MM-dd');
+    } else if (isValid(parsedDate2)) {
+      return format(parsedDate2, 'yyyy-MM-dd');
+    } else {
+      return null;
+    }
+  };
+
   const handleAddProduct = async () => {
     if (!name || !quantity || !expiryDate) {
       Alert.alert('Erro', 'Todos os campos são obrigatórios');
       return;
     }
 
-    const formattedDate = expiryDate.split('/').reverse().join('-');
+    const formattedDate = validateDate(expiryDate);
+
+    if (!formattedDate) {
+      Alert.alert('Erro', 'Data inválida. Use o formato DD/MM/YYYY ou DD-MM-YYYY.');
+      return;
+    }
 
     try {
       await axios.post('http://192.168.24.17:3000/products', {
@@ -28,7 +46,7 @@ const AddProductScreen = ({ route, navigation }) => {
       const response = await axios.get(`http://192.168.24.17:3000/users/${userId}/products`);
       const updatedProducts = response.data;
 
-      navigation.navigate('ProductList', { products: updatedProducts });
+      navigation.navigate('ProductList', { userId, products: updatedProducts });
     } catch (error) {
       console.error(error);
     }
@@ -51,7 +69,7 @@ const AddProductScreen = ({ route, navigation }) => {
         style={styles.input}
         keyboardType="numeric"
       />
-      <Text>Data de Validade (DD/MM/YYYY)</Text>
+      <Text>Data de Validade (DD/MM/YYYY ou DD-MM-YYYY)</Text>
       <TextInput
         placeholder="Data de Validade"
         value={expiryDate}
