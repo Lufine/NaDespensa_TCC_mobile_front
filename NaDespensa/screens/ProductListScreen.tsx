@@ -1,24 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback  } from 'react';
 import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ProductListScreen = ({ route, navigation }) => {
   const { userId } = route.params;
   const [products, setProducts] = useState(route.params.products || []);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(`http://192.168.24.17:3000/users/${userId}/products`);
-        setProducts(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`http://192.168.24.17:3000/users/${userId}/products`);
+      setProducts(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
+  useEffect(() => {
     fetchProducts();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts();
+    }, [])
+  );
 
   const handleEditProduct = (product) => {
     navigation.navigate('EditProduct', { product });
