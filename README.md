@@ -17,4 +17,8 @@
 <li>npx expo start ou npm run start</li>
 
 
-<p>Ale, em "tabs"->"index.tsx", altere o IP para o da sua máquina se quiser testar alguma coisa.</p>
+<p>Ale, em "NaDespensa/screens", altere o IP para o da sua máquina se quiser testar alguma coisa.</p>
+
+<h2>Apiary - NaDespensa</h2>
+
+<li>https://app.swaggerhub.com/apis/Leozin/NaDespensa-API/1.0.0</li>
