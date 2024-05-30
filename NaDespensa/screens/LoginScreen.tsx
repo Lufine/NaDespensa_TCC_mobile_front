@@ -8,7 +8,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.24.17:3000/login', { email, senha });
+      const response = await axios.post('http://192.168.100.106:3000/login', { email, senha });
       if (response.data.success) {
         navigation.navigate('ProductList', { userId: response.data.userId });
       } else {

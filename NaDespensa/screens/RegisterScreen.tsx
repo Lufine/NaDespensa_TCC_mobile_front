@@ -16,7 +16,7 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.24.17:3000/register', {
+      const response = await axios.post('http://192.168.100.106:3000/register', {
         nome,
         idade,
         email,
