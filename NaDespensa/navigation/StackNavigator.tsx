@@ -7,6 +7,8 @@ import ProductListScreen from '../screens/ProductListScreen';
 import AddProductScreen from '../screens/AddProductScreen';
 import EditProductScreen from '../screens/EditProductScreen';
 import RecipeListScreen from '../screens/RecipeListScreen';
+import ForgotPassword from '../screens/ForgotPassword';
+import CreateNewPassowrd from '../screens/CreateNewPassword';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +18,8 @@ const App = () => {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Registrar' }}/>
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ title: 'Esqueceu a senha' }}/>
+        <Stack.Screen name="CreateNewPassword" component={CreateNewPassowrd} options={{ title: 'Criar nova senha' }}/>
         <Stack.Screen name="ProductList" component={ProductListScreen} options={{ title: 'Lista de Produtos' }}/>
         <Stack.Screen name="AddProduct" component={AddProductScreen} options={{ title: 'Adicionar Produto' }}/>
         <Stack.Screen name="EditProduct" component={EditProductScreen} options={{ title: 'Editar Produto' }} />
