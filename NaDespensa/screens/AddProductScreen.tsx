@@ -36,14 +36,14 @@ const AddProductScreen = ({ route, navigation }) => {
     }
 
     try {
-      await axios.post('http://192.168.100.106:3000/products', {
+      await axios.post('http://192.168.77.54:3000/products', {
         name,
         quantity,
         expiry_date: formattedDate,
         user_id: userId,
       });
 
-      const response = await axios.get(`http://192.168.100.106:3000/users/${userId}/products`);
+      const response = await axios.get(`http://192.168.77.54:3000/users/${userId}/products`);
       const updatedProducts = response.data;
 
       navigation.navigate('ProductList', { userId, products: updatedProducts });

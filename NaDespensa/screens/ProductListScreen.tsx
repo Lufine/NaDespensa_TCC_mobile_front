@@ -10,7 +10,7 @@ const ProductListScreen = ({ route, navigation }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`http://192.168.100.106:3000/users/${userId}/products`);
+      const response = await axios.get(`http://192.168.77.54:3000/users/${userId}/products`);
       setProducts(response.data);
     } catch (error) {
       console.error(error);
@@ -44,7 +44,7 @@ const ProductListScreen = ({ route, navigation }) => {
           text: "Excluir",
           onPress: async () => {
             try {
-              await axios.delete(`http://192.168.100.106:3000/products/${productId}`);
+              await axios.delete(`http://192.168.77.54:3000/products/${productId}`);
               setProducts(products.filter((product) => product.id !== productId));
             } catch (error) {
               console.error(error);

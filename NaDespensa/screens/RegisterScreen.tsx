@@ -16,7 +16,7 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.100.106:3000/register', {
+      const response = await axios.post('http://192.168.77.54:3000/register', {
         nome,
         idade,
         email,
@@ -36,9 +36,9 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Nome</Text>
+      <Text>Nome de usuário</Text>
       <TextInput
-        placeholder="Nome"
+        placeholder="Nome de usuário"
         value={nome}
         onChangeText={setNome}
         style={styles.input}

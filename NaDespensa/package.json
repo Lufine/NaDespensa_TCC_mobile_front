@@ -12,6 +12,7 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "axios": "^1.7.2",
+    "cheerio": "^1.0.0-rc.12",
     "date-fns": "^3.6.0",
     "expo": "~51.0.8",
     "expo-status-bar": "~1.12.1",
