@@ -64,11 +64,15 @@ const LoginScreen = ({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
-        <Text style={styles.forget} onPress={() => navigation.navigate('Register')}>Esqueceu a senha?</Text>
+        <Text style={styles.forget} onPress={() => navigation.navigate('ForgotPassword')}>Esqueceu a senha?</Text>
         <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
-        <Text style={styles.register} onPress={() => navigation.navigate('Register')}>Não tem conta? Inscreva-se!</Text>
+        <Text style={styles.register}>
+        Não tem conta?{' '}
+        <Text style={styles.registerLink} onPress={() => navigation.navigate('Register')}> Inscreva-se!</Text>
+      </Text>
+        
         
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
       color: '#3CB371',
       margin: 'auto',
       marginTop: -120,
-      marginRight: 5,
+      marginRight: '4.5%',
       display: 'flex',
       textAlign: 'center',
       marginBottom: 60,
@@ -174,8 +178,12 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       padding: 10,
-      fontWeight: 'bold',
       color: '#3CB371',
+    },
+    registerLink: {
+      color: '#3CB371',
+      fontWeight: 'bold',
+      textDecorationLine: 'underline',
     },
     buttonText: {
       color: '#fff',
