@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback  } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity, Alert, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { useFocusEffect } from '@react-navigation/native';
@@ -10,10 +10,11 @@ const ProductListScreen = ({ route, navigation }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`http://192.168.77.54:3000/users/${userId}/products`);
+      const response = await axios.get(`http://192.168.24.17:3000/users/${userId}/products`);
       setProducts(response.data);
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching products:', error);
+      Alert.alert('Erro', 'Não foi possível carregar os produtos');
     }
   };
 
@@ -44,10 +45,11 @@ const ProductListScreen = ({ route, navigation }) => {
           text: "Excluir",
           onPress: async () => {
             try {
-              await axios.delete(`http://192.168.77.54:3000/products/${productId}`);
+              await axios.delete(`http://192.168.24.17:3000/products/${productId}`);
               setProducts(products.filter((product) => product.id !== productId));
             } catch (error) {
-              console.error(error);
+              console.error('Error deleting product:', error);
+              Alert.alert('Erro', 'Não foi possível excluir o produto');
             }
           },
           style: "destructive"
@@ -72,7 +74,10 @@ const ProductListScreen = ({ route, navigation }) => {
   };
 
   const renderItem = ({ item }) => (
-    <View style={getItemStyle(item.expiry_date)}>
+    <View style={[styles.itemContainer, getItemStyle(item.expiry_date)]}>
+      {item.thumbnail ? (
+        <Image source={{ uri: item.thumbnail }} style={styles.image} />
+      ) : null}
       <Text>Nome: {item.name}</Text>
       <Text>Quantidade: {item.quantity}</Text>
       <Text>Data de Validade: {dayjs(item.expiry_date).format('DD/MM/YYYY')}</Text>
@@ -84,6 +89,7 @@ const ProductListScreen = ({ route, navigation }) => {
   );
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container}>
       <FlatList
         data={products}
@@ -103,6 +109,7 @@ const ProductListScreen = ({ route, navigation }) => {
         <Text style={styles.recipesButtonText}>Ver Receitas</Text>
       </TouchableOpacity>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -110,6 +117,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+  },
+  itemContainer: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginBottom: 10,
   },
   item: {
     padding: 10,
@@ -132,6 +145,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
   },
   addButton: {
     backgroundColor: '#007BFF',
