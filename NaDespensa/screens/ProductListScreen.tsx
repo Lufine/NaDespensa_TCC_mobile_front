@@ -10,13 +10,16 @@ const ProductListScreen = ({ route, navigation }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`http://192.168.24.17:3000/users/${userId}/products`);
+      const response = await axios.get(`http://192.168.24.17:3000/users-products/${userId}`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
       Alert.alert('Erro', 'Não foi possível carregar os produtos');
     }
   };
+  
+  
+  
 
   useEffect(() => {
     fetchProducts();
@@ -33,6 +36,7 @@ const ProductListScreen = ({ route, navigation }) => {
   };
 
   const handleDeleteProduct = (productId) => {
+    console.log(`Attempting to delete product with ID: ${productId}`);
     Alert.alert(
       "Confirmação",
       "Você tem certeza que deseja excluir este produto?",
@@ -45,8 +49,13 @@ const ProductListScreen = ({ route, navigation }) => {
           text: "Excluir",
           onPress: async () => {
             try {
-              await axios.delete(`http://192.168.24.17:3000/products/${productId}`);
-              setProducts(products.filter((product) => product.id !== productId));
+              const response = await axios.delete(`http://192.168.24.17:3000/products/${productId}`);
+              if (response.data.success) {
+                // Remove o produto da lista
+                setProducts(products.filter((product) => product.id !== productId));
+              } else {
+                Alert.alert('Erro', 'Não foi possível excluir o produto');
+              }
             } catch (error) {
               console.error('Error deleting product:', error);
               Alert.alert('Erro', 'Não foi possível excluir o produto');
@@ -58,6 +67,10 @@ const ProductListScreen = ({ route, navigation }) => {
       { cancelable: true }
     );
   };
+  
+  
+  
+  
 
   const getItemStyle = (expiryDate) => {
     const today = dayjs();
@@ -79,23 +92,25 @@ const ProductListScreen = ({ route, navigation }) => {
         <Image source={{ uri: item.thumbnail }} style={styles.image} />
       ) : null}
       <Text>Nome: {item.name}</Text>
-      <Text>Quantidade: {item.quantity}</Text>
-      <Text>Data de Validade: {dayjs(item.expiry_date).format('DD/MM/YYYY')}</Text>
+      <Text>Quantidade: {item.quantity !== undefined ? item.quantity : 'Não especificado'}</Text>
+      <Text>Data de Validade: {item.expiry_date ? dayjs(item.expiry_date).format('DD/MM/YYYY') : 'Data não especificada'}</Text>
       <View style={styles.buttonContainer}>
         <Button title="Editar" onPress={() => handleEditProduct(item)} />
         <Button title="Excluir" onPress={() => handleDeleteProduct(item.id)} color="red" />
       </View>
     </View>
   );
+  
+  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container}>
-      <FlatList
-        data={products}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-      />
+    <FlatList
+    data={products}
+    keyExtractor={(item) => item.product_id ? item.product_id.toString() : Math.random().toString()} // Use um valor único
+    renderItem={renderItem}
+    />
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate('AddProduct', { userId })}
@@ -147,8 +162,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     marginBottom: 10,
   },
   addButton: {
@@ -173,6 +188,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+  listContent: {
+    paddingBottom: 20,
+  }
 });
 
 export default ProductListScreen;

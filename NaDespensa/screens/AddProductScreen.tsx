@@ -43,19 +43,26 @@ const AddProductScreen = ({ route, navigation }) => {
     }
   
     try {
-      await axios.post('http://192.168.24.17:3000/products', {
+      const productResponse = await axios.post('http://192.168.24.17:3000/products', {
         name,
+        price: parseFloat(price), // Salva o produto na tabela products
+        thumbnail,
+        barcode: barcodeInput.trim(),
+      });
+
+      const productId = productResponse.data.id;
+
+      await axios.post('http://192.168.24.17:3000/users-products', {
         quantity: parseInt(quantity, 10),
         expiry_date: formattedDate,
-        price: parseFloat(price), // Assegure-se de enviar como número flutuante
-        thumbnail,
-        barcode: barcodeInput.trim(), // Assegure-se de que está enviando o valor correto
+        price: parseFloat(price),
         user_id: userId,
+        product_id: productId, // Salva a relação na tabela users_products
       });
   
       const response = await axios.get(`http://192.168.24.17:3000/users/${userId}/products`);
       const updatedProducts = response.data;
-  
+
       navigation.navigate('ProductList', { userId, products: updatedProducts });
     } catch (error) {
       console.error('Erro ao adicionar produto:', error.response ? error.response.data : error.message);
@@ -65,12 +72,6 @@ const AddProductScreen = ({ route, navigation }) => {
 
   const fetchProductDetails = async (barcode) => {
     try {
-      // Registra a consulta do código de barras
-      await axios.post('http://192.168.24.17:3000/log-barcode-consumption', {
-        barcode
-      });
-
-      // Busca os detalhes do produto
       const response = await fetch(`https://api.cosmos.bluesoft.com.br/gtins/${barcode}`, {
         headers: {
           'X-Cosmos-Token': 'Gqi8ZqgjbT6lzxd-iG9smw',
@@ -82,7 +83,7 @@ const AddProductScreen = ({ route, navigation }) => {
       setName(data.description || '');
       setThumbnail(data.thumbnail || '');
       setPrice(data.price || '');
-      setExpiryDate('');  // você pode definir um valor padrão para data ou deixar em branco
+      setExpiryDate('');
 
       Alert.alert('Produto Encontrado', `Descrição: ${data.description}\nPreço: ${data.price}`, [
         { text: 'OK', onPress: () => setCameraVisible(false) },
