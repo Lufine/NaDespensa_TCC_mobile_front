@@ -9,6 +9,7 @@ import EditProductScreen from '../screens/EditProductScreen';
 import RecipeListScreen from '../screens/RecipeListScreen';
 import ForgotPassword from '../screens/ForgotPassword';
 import CreateNewPassowrd from '../screens/CreateNewPassword';
+import BarcodeScannerScreen from '../screens/BarcodeScanner';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ const App = () => {
         <Stack.Screen name="CreateNewPassword" component={CreateNewPassowrd} options={{ title: 'Criar nova senha' }}/>
         <Stack.Screen name="ProductList" component={ProductListScreen} options={{ title: 'Lista de Produtos' }}/>
         <Stack.Screen name="AddProduct" component={AddProductScreen} options={{ title: 'Adicionar Produto' }}/>
+        <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} options={{ title: 'Código de Barras' }}/>
         <Stack.Screen name="EditProduct" component={EditProductScreen} options={{ title: 'Editar Produto' }} />
         <Stack.Screen name="Recipes" component={RecipeListScreen} options={{ title: 'Receitas' }} />
       </Stack.Navigator>
