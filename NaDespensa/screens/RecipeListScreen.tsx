@@ -12,7 +12,7 @@ const RecipesScreen = ({ route }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`http://192.168.77.54:3000/users/${userId}/products`);
+        const response = await axios.get(`http://192.168.77.45:3000/users/${userId}/products`);
         const productNames = response.data.map(product => ({ name: product.name, isSelected: false }));
         setProducts(productNames);
       } catch (error) {

@@ -21,7 +21,7 @@ const handleResetPassword = async () => {
     }
 
     try {
-      const response = await axios.post('http://192.168.77.54:3000/reset-password', {
+      const response = await axios.post('http://192.168.77.45:3000/reset-password', {
         email,
         newPassword
       });

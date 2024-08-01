@@ -4,13 +4,13 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { useFocusEffect } from '@react-navigation/native';
 
-const ProductListScreen = ({ route, navigation }) => {
+const ExpiryProductListScreen = ({ route, navigation }) => {
   const { userId } = route.params;
   const [products, setProducts] = useState(route.params.products || []);
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`http://192.168.77.45:3000/users-products/${userId}`);
+      const response = await axios.get(`http://192.168.77.45:3000/expiry-products/${userId}`);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -193,4 +193,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ProductListScreen;
+export default ExpiryProductListScreen;

@@ -12,7 +12,7 @@ const ForgotPassword = ({ navigation }) => {
       }
   
       try {
-        const response = await axios.post('http://192.168.77.54:3000/forgot-password', { email });
+        const response = await axios.post('http://192.168.77.45:3000/forgot-password', { email });
   
         if (response.data.success) {
           Alert.alert('Sucesso', 'Instruções para redefinir a senha foram enviadas para seu email');

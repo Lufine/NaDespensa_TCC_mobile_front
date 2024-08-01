@@ -16,9 +16,9 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.77.54:3000/login', { emailOrUsername, senha });
+      const response = await axios.post('http://192.168.77.45:3000/login', { emailOrUsername, senha });
       if (response.data.success) {
-        navigation.navigate('ProductList', { userId: response.data.userId });
+        navigation.navigate('Dashboard', { userId: response.data.userId });
       } else {
         alert('Credenciais inválidas');
       }
@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView style={styles.container}>
-        <Image style={styles.image} source={require('../assets/despensa.png')} />
+        <Image style={styles.image} source={require('../assets/logodespensa.png')} />
         <Text style={styles.Title}>NaDespensa</Text>
         <Text style={styles.Textlogin}>Login</Text>
         {/* <Text style={styles.textStart}>Email</Text> */}

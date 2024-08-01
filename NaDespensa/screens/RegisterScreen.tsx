@@ -15,7 +15,7 @@ const RegisterScreen = ({ navigation }) => {
     navigation.setOptions({
       headerShown: false,
     });
-  }, [navigation]);
+  }, [navigation]); 
 
   const handleRegister = async () => {
     if (!nome || !email || !dataNascimento || !telefone || !senha) {
@@ -24,7 +24,7 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.77.54:3000/register', {
+      const response = await axios.post('http://192.168.77.45:3000/register', {
         nome,
         email,
         dataNascimento,

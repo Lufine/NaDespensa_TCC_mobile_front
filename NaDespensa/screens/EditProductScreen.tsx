@@ -37,12 +37,12 @@ const EditProductScreen = ({ route, navigation }) => {
     }
 
     try {
-      await axios.put(`http://192.168.24.17:3000/users-products/${product.id}`, {
+      await axios.put(`http://192.168.77.45:3000/users-products/${product.id}`, {
         quantity,
         expiry_date: formattedDate,
       });
 
-      const response = await axios.get(`http://192.168.24.17:3000/users-products/${product.user_id}`);
+      const response = await axios.get(`http://192.168.77.45:3000/users-products/${product.user_id}`);
       const updatedProducts = response.data;
 
       navigation.navigate('ProductList', { userId: product.user_id, products: updatedProducts });
