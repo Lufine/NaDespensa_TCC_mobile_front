@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import notificationService from './NotificationService';
 import NavigationFooter from './FooterPerfil';
 
 const ProfileScreen = ({ navigation, route }) => {
@@ -13,6 +14,11 @@ const ProfileScreen = ({ navigation, route }) => {
 
   const handleNavigate = (screen) => {
     navigation.navigate(screen, { userId });
+  };
+
+  const handleTestNotification = async () => {
+    await notificationService.scheduleTestNotification();
+    alert("Notificação de teste agendada para 5 segundos.");
   };
 
   return (
@@ -40,6 +46,10 @@ const ProfileScreen = ({ navigation, route }) => {
         navigation.navigate('Login');
       }}>
         <Text style={styles.sair}>Sair</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.testButton} onPress={handleTestNotification}>
+        <Text style={styles.buttonText}>Testar Notificação</Text>
       </TouchableOpacity>
       <NavigationFooter handleNavigate={handleNavigate} />
     </View>

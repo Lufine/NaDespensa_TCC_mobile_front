@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Image, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native';
 import { View, TextInput, StyleSheet } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import notificationService from './NotificationService';
 
 const LoginScreen = ({ navigation }) => {
   const [emailOrUsername, setEmailOrUsername] = useState('');
@@ -16,8 +18,18 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.77.45:3000/login', { emailOrUsername, senha });
+      const response = await axios.post('http://192.168.24.17:3000/login', { emailOrUsername, senha });
       if (response.data.success) {
+        // Armazenar o userId
+        await AsyncStorage.setItem('userId', response.data.userId.toString());
+
+        // Verificar se as notificações estão habilitadas
+        const notificationsEnabled = await AsyncStorage.getItem('notificationsEnabled');
+        if (notificationsEnabled === 'true') {
+          // Iniciar o serviço de notificações
+          await notificationService.checkAndSendNotifications(response.data.userId);
+        }
+
         navigation.navigate('Dashboard', { userId: response.data.userId });
       } else {
         alert('Credenciais inválidas');
@@ -37,7 +49,6 @@ const LoginScreen = ({ navigation }) => {
         <Image style={styles.image} source={require('../assets/logodespensa.png')} />
         <Text style={styles.Title}>NaDespensa</Text>
         <Text style={styles.Textlogin}>Login</Text>
-        {/* <Text style={styles.textStart}>Email</Text> */}
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="Email ou nome de usuário"
@@ -47,7 +58,6 @@ const LoginScreen = ({ navigation }) => {
           />
           <Image style={styles.userLogo} source={require('../assets/user.png')} />
         </View>
-        {/* <Text style={styles.textStart}>Senha</Text> */}
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="Senha"
@@ -69,11 +79,9 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
         <Text style={styles.register}>
-        Não tem conta?{' '}
-        <Text style={styles.registerLink} onPress={() => navigation.navigate('Register')}> Inscreva-se!</Text>
-      </Text>
-        
-        
+          Não tem conta?{' '}
+          <Text style={styles.registerLink} onPress={() => navigation.navigate('Register')}> Inscreva-se!</Text>
+        </Text>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
