@@ -15,9 +15,7 @@ import CreateNewPassowrd from '../screens/CreateNewPassword';
 import BarcodeScannerScreen from '../screens/BarcodeScanner';
 import Profile from '../screens/Profile';
 import Config from '../screens/Config';
-import HelpOne from '../screens/HelpOne';
-import HelpTwo from '../screens/HelpTwo';
-import HelpThree from '../screens/HelpThree';
+import Help from '../screens/Help';
 
 const Stack = createStackNavigator();
 
@@ -39,9 +37,7 @@ const App = () => {
         <Stack.Screen name="Recipes" component={RecipeListScreen} options={{ title: 'Receitas' }} />
         <Stack.Screen name="Profile" component={Profile} options={{ title: 'Perfil' }} />
         <Stack.Screen name="Config" component={Config} options={{ title: 'Configurações' }} />
-        <Stack.Screen name="HelpOne" component={HelpOne} options={{ title: 'Ajuda' }} />
-        <Stack.Screen name="HelpTwo" component={HelpTwo} options={{ title: 'Ajuda' }} />
-        <Stack.Screen name="HelpThree" component={HelpThree} options={{ title: 'Ajuda' }} />
+        <Stack.Screen name="Help" component={Help} options={{ title: 'Ajuda' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
