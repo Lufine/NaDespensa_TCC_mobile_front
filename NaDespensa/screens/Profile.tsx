@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   backContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: '25%',
+    marginTop: '20%',
   },
   back: {
     width: 20,

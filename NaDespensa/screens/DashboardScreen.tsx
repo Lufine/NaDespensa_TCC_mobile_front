@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavigationFooter from './FooterDespensa';
 
 const DashboardScreen = ({ route, navigation }) => {
@@ -16,12 +15,12 @@ const DashboardScreen = ({ route, navigation }) => {
     fetchItemCounts();
     navigation.setOptions({
         headerShown: false,
-      });
+    });
   }, []);
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`http://192.168.77.45:3000/users/${userId}`);
+      const response = await axios.get(`http://192.168.24.17:3000/users/${userId}`);
       setUserData(response.data);
     } catch (error) {
       console.error('Erro ao buscar dados do usuário:', error);
@@ -31,8 +30,8 @@ const DashboardScreen = ({ route, navigation }) => {
 
   const fetchItemCounts = async () => {
     try {
-      const expiredResponse = await axios.get(`http://192.168.77.45:3000/expiry-products-count/${userId}`);
-      const nearExpiryResponse = await axios.get(`http://192.168.77.45:3000/pre-expiry-products-count/${userId}`);
+      const expiredResponse = await axios.get(`http://192.168.24.17:3000/expiry-products-count/${userId}`);
+      const nearExpiryResponse = await axios.get(`http://192.168.24.17:3000/pre-expiry-products-count/${userId}`);
 
       setExpiredItemsCount(expiredResponse.data.count);
       setNearExpiryItemsCount(nearExpiryResponse.data.count);
@@ -91,8 +90,8 @@ const DashboardScreen = ({ route, navigation }) => {
             <Image source={require('../assets/plus.png')} style={styles.add}/>
             <Image source={require('../assets/barcode.png')} style={styles.barcode} />
           </TouchableOpacity>
-          <NavigationFooter handleNavigate={handleNavigate} />
-        </View>
+          </View>
+          <NavigationFooter handleNavigate={handleNavigate} currentScreen="Dashboard" />
     </View>
   );
 };
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
         height: 200,
         position: 'absolute',
         right: "-10%",
-        top: "-15%",
+        top: "-20%",
     },
     greeting: {
         fontSize: 20,

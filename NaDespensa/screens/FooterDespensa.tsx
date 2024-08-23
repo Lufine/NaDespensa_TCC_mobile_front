@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
+
+const { height } = Dimensions.get('window');
 
 const NavigationFooter = ({ handleNavigate }) => {
   return (
@@ -20,46 +22,48 @@ const NavigationFooter = ({ handleNavigate }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      padding: 10,
-      top: '5%',
-      backgroundColor: '#fff',
-      borderTopWidth: 1,
-      borderColor: '#ddd',
-    },
-    container2:{
-      alignSelf: 'flex-start',
-      flexDirection: 'row',
-      flex: 1,
-      justifyContent: 'space-between',
-      padding: 10,
-    },
-    icon1: {
-      margin: 'auto',
-      left: 10,
-      top: '-15%',
-      bottom: 0,
-      maxWidth: 55,
-      maxHeight: 55,
-    },
-    icon2: {
-      margin: 'auto',
-      top: '-15%',
-      left: 10,
-      bottom: 0,
-      maxWidth: 65,
-      maxHeight: 55,
-    },
-    icon3: {
-      margin: 'auto',
-      top: '-15%',
-      bottom: 0,
-      left: 10,
-      maxWidth: 95,
-      maxHeight: 60,
-    },
+  container: {
+    position: 'absolute',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    bottom: 0,
+    width: '100%',
+    height: height * 0.12,
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+  },
+  container2: {
+    height: height * 0.005,
+    top: height *0.08,
+    bottom: 0,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  icon1: {
+    margin: 'auto',
+    left: 15,
+    marginBottom: 5,
+    maxWidth: 55,
+    maxHeight: 55,
+  },
+  icon2: {
+    margin: 'auto',
+    marginBottom: 5,
+    left: 20,
+    maxWidth: 65,
+    maxHeight: 55,
+  },
+  icon3: {
+    margin: 'auto',
+    marginBottom: 5,
+    left: 15,
+    maxWidth: 95,
+    maxHeight: 60,
+  },
 });
 
 export default NavigationFooter;
