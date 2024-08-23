@@ -59,7 +59,7 @@ const DashboardScreen = ({ route, navigation }) => {
           <Image style={styles.design} source={require('../assets/desingtopright.png')} />
           <Text style={styles.greeting}>Olá,</Text>
           <Text style={styles.username}>{userData.nome}</Text>
-          <TouchableOpacity onPress={() => handleNavigate('ProductList')}>
+          <TouchableOpacity onPress={() => handleNavigate('Config')}>
           <Image source={require('../assets/alarm.png')} style={styles.notifications}/>
           </TouchableOpacity>
           <View style={{flexDirection: 'row', justifyContent: 'space-around', padding: 10, top: '10%', backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#3CB371',}}>{userData.notifications}</View>

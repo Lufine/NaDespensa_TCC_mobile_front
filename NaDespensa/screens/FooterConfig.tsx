@@ -11,10 +11,10 @@ const NavigationFooter = ({ handleNavigate }) => {
           <Image style={styles.icon1} source={require('../assets/despensa.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleNavigate('Profile')}>
-          <Image style={styles.icon2} source={require('../assets/perfilgreen.png')}  />
+          <Image style={styles.icon2} source={require('../assets/perfil.png')}  />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleNavigate('Config')}>
-          <Image style={styles.icon3} source={require('../assets/config.png')} />
+          <Image style={styles.icon3} source={require('../assets/configgreen.png')} />
         </TouchableOpacity>
       </View>
     </View>
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     padding: 10,
     bottom: 0,
     width: '100%',
+    backgroundColor: '#FFF',
     height: height * 0.12,
     borderTopWidth: 1,
     borderColor: '#ddd',

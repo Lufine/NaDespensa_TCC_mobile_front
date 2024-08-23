@@ -24,7 +24,7 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.77.45:3000/register', {
+      const response = await axios.post('http://192.168.24.17:3000/register', {
         nome,
         email,
         dataNascimento,
@@ -49,82 +49,86 @@ const RegisterScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Image style={styles.back} source={require('../assets/back.png')} />
-        <Text style={styles.voltar}>Voltar</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>Inscrever-se</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Nome"
-          value={nome}
-          onChangeText={setNome}
-          style={styles.input}
-        />
-        <Image style={styles.icon} source={require('../assets/user.png')} />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-        />
-        <Image style={styles.icon} source={require('../assets/email.png')} />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Data de nascimento"
-          value={dataNascimento}
-          onChangeText={setDataNascimento}
-          style={styles.input}
-        />
-        <Image style={styles.icon} source={require('../assets/calendar.png')} />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Telefone"
-          value={telefone}
-          onChangeText={setTelefone}
-          style={styles.input}
-        />
-        <Image style={styles.icon} source={require('../assets/phone.png')} />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Senha"
-          value={senha}
-          onChangeText={setSenha}
-          style={styles.input}
-          secureTextEntry={!isPasswordVisible}
-        />
-        <Image style={styles.icon} source={require('../assets/cadeado.png')} />
-        <TouchableOpacity onPress={togglePasswordVisibility}>
-          <Image
-            style={styles.showIcon}
-            source={isPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
+      <View style={styles.container2}>
+        <View style={styles.Buttonback}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Image style={styles.back} source={require('../assets/back.png')} />
+            <Text style={styles.voltar}>Voltar</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.title}>Inscrever-se</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Nome"
+            value={nome}
+            onChangeText={setNome}
+            style={styles.input}
           />
-        </TouchableOpacity>
-      </View>
-      <View>
-        <Image style={styles.iconInfo} source={require('../assets/info.png')} />
-        <Text style={styles.passwordInfoTitle}>Para uma senha forte:</Text>
-      </View>
-      <Text style={styles.passwordInfo}>
-        {'\n'}• Senha deve ter no mínimo 8 caracteres;
-        {'\n'}• Conter pelo menos 1 (um) número;
-        {'\n'}• Conter pelo menos 1 (uma) letra maiúscula;
-        {'\n'}• Conter pelo menos 1 (uma) letra minúscula;
-      </Text>
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Cadastrar</Text>
-      </TouchableOpacity>
-      <Text style={styles.loginLink}>
-        Já tem uma conta?{' '}
-        <Text style={styles.loginLinkText} onPress={() => navigation.navigate('Login')}>
-          Entre
+          <Image style={styles.icon} source={require('../assets/user.png')} />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+          />
+          <Image style={styles.icon} source={require('../assets/email.png')} />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Data de nascimento"
+            value={dataNascimento}
+            onChangeText={setDataNascimento}
+            style={styles.input}
+          />
+          <Image style={styles.icon} source={require('../assets/calendar.png')} />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Telefone"
+            value={telefone}
+            onChangeText={setTelefone}
+            style={styles.input}
+          />
+          <Image style={styles.icon} source={require('../assets/phone.png')} />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Senha"
+            value={senha}
+            onChangeText={setSenha}
+            style={styles.input}
+            secureTextEntry={!isPasswordVisible}
+          />
+          <Image style={styles.icon} source={require('../assets/cadeado.png')} />
+          <TouchableOpacity onPress={togglePasswordVisibility}>
+            <Image
+              style={styles.showIcon}
+              source={isPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
+            />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <Image style={styles.iconInfo} source={require('../assets/info.png')} />
+          <Text style={styles.passwordInfoTitle}>Para uma senha forte:</Text>
+        </View>
+        <Text style={styles.passwordInfo}>
+          {'\n'}• Senha deve ter no mínimo 8 caracteres;
+          {'\n'}• Conter pelo menos 1 (um) número;
+          {'\n'}• Conter pelo menos 1 (uma) letra maiúscula;
+          {'\n'}• Conter pelo menos 1 (uma) letra minúscula;
         </Text>
-      </Text>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Cadastrar</Text>
+        </TouchableOpacity>
+        <Text style={styles.loginLink}>
+          Já tem uma conta?{' '}
+          <Text style={styles.loginLinkText} onPress={() => navigation.navigate('Login')}>
+            Entre
+          </Text>
+        </Text>
+      </View>
     </ScrollView>
   );
 };
@@ -132,15 +136,20 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#fff',
   },
   design: {
-    width: 180,
-    height: 160,
+    width: 220,
+    height: 200,
     position: 'absolute',
-    right: -20,
-    top: -20,
+    right: "-10%",
+    top: 0,
+},
+  container2:{
+    padding: 20,
+  },
+  Buttonback:{
+    width: '30%',
   },
   back: {
     width: 20,
@@ -154,6 +163,7 @@ const styles = StyleSheet.create({
     marginTop: -30,
     marginLeft: 20,
     marginBottom: 30,
+    marginRight: 30,
   },
   title: {
     fontSize: 30,

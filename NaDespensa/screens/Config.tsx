@@ -1,225 +1,243 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Switch, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import NavigationFooter from './FooterDespensa';
+import NavigationFooter from './FooterConfig';
+import notificationService from './NotificationService'; // Certifique-se de ajustar o caminho
 
-const DashboardScreen = ({ route, navigation }) => {
-  const [userData, setUserData] = useState(null);
-  const [expiredItemsCount, setExpiredItemsCount] = useState(0);
-  const [nearExpiryItemsCount, setNearExpiryItemsCount] = useState(0);
+const SettingsScreen = ({ route, navigation }) => {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [userData, setUserData] = useState({
+    nome: '',
+    email: '',
+    telefone: '',
+  });
 
   const { userId } = route.params;
 
   useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const notificationsEnabled = await AsyncStorage.getItem('notificationsEnabled');
+        setIsEnabled(notificationsEnabled === 'true');
+      } catch (error) {
+        console.error('Erro ao carregar configurações de notificações:', error);
+      }
+    };
+
+    loadSettings();
     fetchUserData();
-    fetchItemCounts();
     navigation.setOptions({
-        headerShown: false,
-      });
+      headerShown: false,
+    });
   }, []);
+
+  const handleNavigate = (screen) => {
+    navigation.navigate(screen, { userId });
+  };
+
+  const toggleSwitch = () => {
+    Alert.alert(
+      "Confirmação",
+      `Você deseja ${isEnabled ? 'desativar' : 'ativar'} as notificações?`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Confirmar",
+          onPress: async () => {
+            const newValue = !isEnabled;
+            setIsEnabled(newValue);
+            try {
+              await AsyncStorage.setItem('notificationsEnabled', newValue.toString());
+              if (newValue) {
+                console.log('Habilitando notificações...');
+                await notificationService.configure();
+                await notificationService.checkAndSendNotifications(); // Enviar notificações sobre produtos próximos ao vencimento
+                await notificationService.scheduleTestNotification(); // Enviar notificação de teste
+              } else {
+                console.log('Desabilitando notificações...');
+                await notificationService.cancelAllNotifications(); // Cancelar todas as notificações
+              }
+            } catch (error) {
+              console.error('Erro ao salvar configurações de notificações:', error);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`http://192.168.77.45:3000/users/${userId}`);
-      setUserData(response.data);
+      const response = await axios.get(`http://192.168.24.17:3000/users/${userId}`);
+      const { nome, email, telefone } = response.data;
+      setUserData({
+        nome,
+        email,
+        telefone,
+      });
     } catch (error) {
       console.error('Erro ao buscar dados do usuário:', error);
       Alert.alert('Erro', 'Não foi possível carregar os dados do usuário');
     }
   };
 
-  const fetchItemCounts = async () => {
-    try {
-      const expiredResponse = await axios.get(`http://192.168.77.45:3000/expiry-products-count/${userId}`);
-      const nearExpiryResponse = await axios.get(`http://192.168.77.45:3000/pre-expiry-products-count/${userId}`);
-
-      setExpiredItemsCount(expiredResponse.data.count);
-      setNearExpiryItemsCount(nearExpiryResponse.data.count);
-    } catch (error) {
-      console.error('Erro ao buscar contagem de itens:', error);
-      Alert.alert('Erro', 'Não foi possível carregar a contagem de itens');
-    }
-  };
-
-  const handleNavigate = (screen) => {
-    navigation.navigate(screen, { userId });
-  };
-
-  if (!userData) {
-    return (
-      <View style={styles.container}>
-        <Text>Carregando...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      <View style={styles.top}>
-          <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-          <Text style={styles.greeting}>Olá,</Text>
-          <Text style={styles.username}>{userData.nome}</Text>
-          <TouchableOpacity onPress={() => handleNavigate('ProductList')}>
-          <Image source={require('../assets/alarm.png')} style={styles.notifications}/>
-          </TouchableOpacity>
-          <View style={{flexDirection: 'row', justifyContent: 'space-around', padding: 10, top: '10%', backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#3CB371',}}>{userData.notifications}</View>
-          <View style={styles.infoContainer}>
-            <TouchableOpacity style={styles.infoBox} onPress={() => handleNavigate('ExpiryProductList')}>
-              <Text style={styles.infoCount}>{expiredItemsCount}</Text>
-              <Text style={styles.infoLabel}>Itens vencidos</Text>
-              <Image source={require('../assets/cancel.png')} style={styles.cancelImage}/>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.infoBox} onPress={() => handleNavigate('PreExpiryProductList')}>
-              <Text style={styles.infoCountVencer}>{nearExpiryItemsCount}</Text>
-              <Text style={styles.infoLabel}>Itens a vencer</Text>
-              <Image source={require('../assets/time.png')} style={styles.cancelTime}/>
-            </TouchableOpacity>
-          </View>
-          
-            <TouchableOpacity onPress={() => handleNavigate('ProductList')}>
-                <Image source={require('../assets/cesta.png')} style={styles.basketImage} />
-                <Text style={styles.textItens}>Todos os itens</Text>
-            </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('Recipes')}>
-            <Text style={styles.buttonText}>Ver receitas NaDespensa</Text>
-            <Image source={require('../assets/search.png')} style={styles.search}/>
-            <Image source={require('../assets/barcode.png')} style={styles.barcode}/>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handleNavigate('AddProduct')}>
-            <Text style={styles.buttonText}>Adicionar item NaDespensa</Text>
-            <Image source={require('../assets/plus.png')} style={styles.add}/>
-            <Image source={require('../assets/barcode.png')} style={styles.barcode} />
-          </TouchableOpacity>
-          <NavigationFooter handleNavigate={handleNavigate} />
+      <Image style={styles.design} source={require('../assets/desingtopright.png')} />
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
+        <Image style={styles.back} source={require('../assets/back.png')} />
+        <Text style={styles.voltar}>Voltar</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.title}>Configurações</Text>
+
+      <Image style={styles.image} source={require('../assets/imageconfig.png')} />
+
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Notificações</Text>
+          <Switch
+            trackColor={{ false: "#767577", true: "#3CB371" }}
+            thumbColor={isEnabled ? "#ffffff" : "#f4f3f4"}
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+              style={{alignSelf: 'flex-start',}}
+          />
         </View>
+
+        <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContentContainer}>
+          
+        <View style={styles.section}>
+          <Text style={styles.sectionHeader}>Informações da conta</Text>
+
+          <TouchableOpacity style={styles.infoItem} onPress={() => handleNavigate('SetNewName')}>
+            <Image style={styles.icon} source={require('../assets/user.png')} />
+            <View style={styles.infoTextContainer}>
+              <Text style={styles.infoTitle}>Nome</Text>
+              <Text style={styles.infoValue}>{userData.nome}</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.infoItem} onPress={() => handleNavigate('SetNewEmail')}>
+            <Image style={styles.icon} source={require('../assets/email.png')} />
+            <View style={styles.infoTextContainer}>
+              <Text style={styles.infoTitle}>Email</Text>
+              <Text style={styles.infoValue}>{userData.email}</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.infoItem}>
+            <Image style={styles.icon} source={require('../assets/phone.png')} />
+            <View style={styles.infoTextContainer}>
+              <Text style={styles.infoTitle}>Telefone</Text>
+              <Text style={styles.infoValue}>{userData.telefone}</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.infoItem} onPress={() => handleNavigate('SetNewPassword')}>
+            <Image style={styles.icon} source={require('../assets/cadeado.png')} />
+            <View style={styles.infoTextContainer}>
+              <Text style={styles.infoTitle}>Senha</Text>
+              <Text style={styles.infoValue}>Alterar Senha</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      <NavigationFooter handleNavigate={handleNavigate} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#FFFFFF',
-    },
-    top: {
-        top: '10%',
-    },
-    design: {
-        width: 220,
-        height: 200,
-        position: 'absolute',
-        right: "-10%",
-        top: "-15%",
-    },
-    greeting: {
-        fontSize: 20,
-        color: '#3CB371',
-    },
-    username: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#3CB371',
-    },
-    cancelImage: {
-        width: 20,
-        height: 20,
-        right: 30,
-        top: '-59%',
-    },
-    cancelTime: {
-        width: 14,
-        height: 18,
-        right: 30,
-        top: '-58%',
-    },
-    notifications: {
-        width: 40,
-        height: 40,
-        position: 'absolute',
-        right: 50,
-        top: -40,
-    },
-    infoContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginVertical: 20,
-        marginTop: 40,
-    },
-    infoBox: {
-        flex: 1,
-        alignItems: 'center',
-        padding: 10,
-        borderRadius: 10,
-        backgroundColor: '#F0F0F0',
-        marginHorizontal: 5,
-    },
-    infoCount: {
-        marginTop: 10,
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#FF0000',
-    },
-    infoCountVencer: {
-        marginTop: 10,
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#FF6B00',
-    },
-    infoLabel: {
-        marginTop: 10,
-        fontSize: 14,
-        color: '#666',
-    },
-    basketImage: {
-        top: 0,
-        width: 150,
-        height: 150,
-        alignSelf: 'center',
-        marginBottom: 10,
-    },
-    textItens: {
-        top: '-5%',
-        fontSize: 20,
-        color: '#78746D',
-        textAlign: 'center',
-        marginBottom: 50,
-    },
-    barcode: {
-        width: 30,
-        height: 30,
-        top: '-60%',
-        alignSelf: 'flex-end',
-        right: 10,
-    },
-    search: {
-        width: 17,
-        height: 19,
-        top: '-35%',
-        alignSelf: 'flex-start',
-        left: 10,
-    },
-    add: {
-        width: 20,
-        height: 20,
-        top: '-35%',
-        alignSelf: 'flex-start',
-        left: 10,
-    },
-    button:{
-        marginTop: -30,
-    },
-    buttonText: {
-        color: '#78746D',
-        fontSize: 16,
-        backgroundColor: 'transparent', 
-        borderWidth: 1, 
-        borderColor: '#3CB371', 
-        padding: 10, 
-        borderRadius: 5, 
-        textAlign: 'center',
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    padding: 20,
+  },
+  design: {
+    width: 220,
+    height: 200,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    paddingBottom: 80, // Espaçamento adicional para garantir que o conteúdo não seja oculto pelo footer
+  },
+  backContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginTop: '8%',
+  },
+  back: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
+  },
+  voltar: {
+    color: '#3CB371',
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#3CB371',
+    marginTop: 10,
+  },
+  image: {
+    width: 150,
+    height: 150,
+    alignSelf: 'center',
+    marginVertical: 20,
+  },
+  section: {
+    marginVertical: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#3CB371',
+    marginBottom: 10,
+  },
+  sectionHeader: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    marginRight: 10,
+  },
+  infoTextContainer: {
+    flex: 1,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#3CB371',
+  },
+  infoValue: {
+    fontSize: 14,
+    color: '#777',
+  },
 });
 
-export default DashboardScreen;
+export default SettingsScreen;

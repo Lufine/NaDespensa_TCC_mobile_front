@@ -1,80 +1,97 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Button } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Button, KeyboardAvoidingView, Platform } from 'react-native';
 import axios from 'axios';
+import CreateNewPassword from './CreateNewPassword';
 
 const ForgotPassword = ({ navigation }) => {
     const [email, setEmail] = useState('');
   
     const handleForgotPassword = async () => {
-      if (!email) {
-        Alert.alert('Erro', 'Por favor, insira seu email');
-        return;
-      }
-  
-      try {
-        const response = await axios.post('http://192.168.77.45:3000/forgot-password', { email });
-  
-        if (response.data.success) {
-          Alert.alert('Sucesso', 'Instruções para redefinir a senha foram enviadas para seu email');
-          navigation.goBack();
-        } else {
-          Alert.alert('Erro', 'Não foi possível enviar as instruções. Tente novamente.');
+        if (!email) {
+            Alert.alert('Erro', 'Por favor, insira seu email');
+            return;
         }
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          Alert.alert('Erro', 'Nenhum usuário com o email informado encontrado');
-        } else {
-          Alert.alert('Erro', 'Ocorreu um erro. Tente novamente.');
+  
+        try {
+            const response = await axios.post('http://192.168.24.17:3000/forgot-password', { email });
+  
+            if (response.data.success) {
+                Alert.alert('Sucesso', 'Instruções para redefinir a senha foram enviadas para seu email');
+                navigation.goBack();
+            } else {
+                Alert.alert('Erro', 'Não foi possível enviar as instruções. Tente novamente.');
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                Alert.alert('Erro', 'Nenhum usuário com o email informado encontrado');
+            } else {
+                Alert.alert('Erro', 'Ocorreu um erro. Tente novamente.');
+            }
+            console.error(error);
         }
-        console.error(error);
-      }
+    };
+
+    const handleNavigate = (screen) => {
+      navigation.navigate(screen);
     };
 
     useEffect(() => {
         navigation.setOptions({
-          headerShown: false,
+            headerShown: false,
         });
-      }, [navigation]);
+    }, [navigation]);
   
     return (
-      <ScrollView style={styles.container}>
-        <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image style={styles.back} source={require('../assets/back.png')} />
-            <Text style={styles.voltar}>Voltar</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Esqueceu a senha?</Text>
-        <Text style={styles.subtitle}>Redefina a senha em duas etapas</Text>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-          />
-          <Image style={styles.icon} source={require('../assets/email.png')} />
-        </View>
-        <TouchableOpacity style={styles.button} onPress={handleForgotPassword}>
-          <Text style={styles.buttonText}>Enviar</Text>
-        </TouchableOpacity>
-        <Image style={styles.designunder} source={require('../assets/designunder.png')} />
-        <Button title="TESTE TELA SENHA" onPress={() => navigation.navigate('CreateNewPassword')} />
-      </ScrollView>     
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <Image style={styles.design} source={require('../assets/desingtopright.png')} />
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Image style={styles.back} source={require('../assets/back.png')} />
+                    <Text style={styles.voltar}>Voltar</Text>
+                </TouchableOpacity>
+                <Text style={styles.title}>Esqueceu a senha?</Text>
+                <Text style={styles.subtitle}>Redefina a senha em duas etapas</Text>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        style={styles.input}
+                    />
+                    <Image style={styles.icon} source={require('../assets/email.png')} />
+                </View>
+                <TouchableOpacity style={styles.button} onPress={handleForgotPassword}>
+                    <Text style={styles.buttonText}>Enviar</Text>
+                </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={() => handleNavigate('CreateNewPassword')}>
+                <Text style={styles.buttonText}>TESTE TELA SENHA</Text>
+              </TouchableOpacity>
+                <Image style={styles.designunder} source={require('../assets/designunder.png')} />
+            </ScrollView>
+            
+        </KeyboardAvoidingView>
     );
-  };
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
         backgroundColor: '#fff',
     },
+    scrollContainer: {
+        flexGrow: 1,
+        padding: 20,
+        paddingBottom: 220,
+    },
     design: {
-        width: 180,
-        height: 160,
+        width: 220,
+        height: 200,
         position: 'absolute',
-        right: -20,
-        top: -20,
+        right: "-10%",
+        top: 0,
     },
     back: {
         width: 20,
@@ -135,12 +152,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     designunder: {
-        width: '120%',
-        height: '55%',
-        position: 'relative',
-        bottom: '-60%',        
-        left: '-10%',
+        width: '115%',
+        height: 200,
+        position: 'absolute',
         display: 'flex',
+        bottom: -35,
+        left: 0,
     },
 });
 

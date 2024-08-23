@@ -21,7 +21,7 @@ const handleResetPassword = async () => {
     }
 
     try {
-      const response = await axios.post('http://192.168.77.45:3000/reset-password', {
+      const response = await axios.post('http://192.168.24.17:3000/reset-password', {
         email,
         newPassword
       });
@@ -54,64 +54,66 @@ const handleResetPassword = async () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image style={styles.back} source={require('../assets/back.png')} />
-            <Text style={styles.voltar}>Voltar</Text>
-        </TouchableOpacity>
-      <Text style={styles.title}>Crie uma nova senha</Text>
-      <View style={styles.inputContainer}>
+      <View style={styles.container2}>
+        <Image style={styles.design} source={require('../assets/desingtopright.png')} />
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Image style={styles.back} source={require('../assets/back.png')} />
+              <Text style={styles.voltar}>Voltar</Text>
+          </TouchableOpacity>
+        <Text style={styles.title}>Crie uma nova senha</Text>
+        <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Senha"
+              value={newPassword}
+              onChangeText={setNewPassword}
+              style={styles.input}
+              secureTextEntry={!isPasswordVisible}
+            />
+            <Image style={styles.userLogo} source={require('../assets/cadeado.png')} />
+            <TouchableOpacity onPress={togglePasswordVisibility}>
+              <Image
+                style={styles.userLogoShow}
+                source={isPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
+              />
+            </TouchableOpacity>
+          </View>
+        <View style={styles.inputContainer}>
           <TextInput
-            placeholder="Senha"
-            value={newPassword}
-            onChangeText={setNewPassword}
+            placeholder="Confirme a nova senha"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
             style={styles.input}
-            secureTextEntry={!isPasswordVisible}
+            secureTextEntry={!isConfirmPasswordVisible}
           />
           <Image style={styles.userLogo} source={require('../assets/cadeado.png')} />
-          <TouchableOpacity onPress={togglePasswordVisibility}>
-            <Image
-              style={styles.userLogoShow}
-              source={isPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
+              <Image
+                style={styles.userLogoShow}
+                source={isConfirmPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
+              />
+            </TouchableOpacity>
         </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Confirme a nova senha"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          style={styles.input}
-          secureTextEntry={!isConfirmPasswordVisible}
-        />
-        <Image style={styles.userLogo} source={require('../assets/cadeado.png')} />
-          <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
-            <Image
-              style={styles.userLogoShow}
-              source={isConfirmPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
-            />
-          </TouchableOpacity>
-      </View>
-      <View>
-        <Image style={styles.iconInfo} source={require('../assets/info.png')} />
-        <Text style={styles.passwordInfoTitle}>Para uma senha forte:</Text>
-      </View>
-      <Text style={styles.passwordInfo}>
-        {'\n'}• Senha deve ter no mínimo 8 caracteres;
-        {'\n'}• Conter pelo menos 1 (um) número;
-        {'\n'}• Conter pelo menos 1 (uma) letra maiúscula;
-        {'\n'}• Conter pelo menos 1 (uma) letra minúscula;
-      </Text>
-      <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
-        <Text style={styles.buttonText}>Enviar</Text>
-      </TouchableOpacity>
-      <View>
+        <View>
           <Image style={styles.iconInfo} source={require('../assets/info.png')} />
-          <Text style={styles.passwordInfoTitle}>
-            É necessário que todos os dispositivos acessem sua conta com a nova senha.
-          </Text>
+          <Text style={styles.passwordInfoTitle}>Para uma senha forte:</Text>
+        </View>
+        <Text style={styles.passwordInfo}>
+          {'\n'}• Senha deve ter no mínimo 8 caracteres;
+          {'\n'}• Conter pelo menos 1 (um) número;
+          {'\n'}• Conter pelo menos 1 (uma) letra maiúscula;
+          {'\n'}• Conter pelo menos 1 (uma) letra minúscula;
+        </Text>
+        <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
+          <Text style={styles.buttonText}>Enviar</Text>
+        </TouchableOpacity>
+        <View>
+            <Image style={styles.iconInfo} source={require('../assets/info.png')} />
+            <Text style={styles.passwordInfoTitle}>
+              É necessário que todos os dispositivos acessem sua conta com a nova senha.
+            </Text>
+        </View>
+        <Image style={styles.designunder} source={require('../assets/designunder.png')} />
       </View>
-      <Image style={styles.designunder} source={require('../assets/designunder.png')} />
     </ScrollView>
   );
 };
@@ -119,15 +121,19 @@ const handleResetPassword = async () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
         backgroundColor: '#fff',
     },
+    container2:{
+      flexGrow: 1,
+      padding: 20,
+      paddingBottom: 220,
+    },
     design: {
-        width: 180,
-        height: 160,
-        position: 'absolute',
-        right: -20,
-        top: -20,
+      width: 220,
+      height: 200,
+      position: 'absolute',
+      right: "-10%",
+      top: 0,
     },
     back: {
         width: 20,
@@ -210,12 +216,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     designunder: {
-        width: '120%',
-        height: '40%',
-        position: 'relative',
-        bottom: '-20%',        
-        left: '-10%',
-        display: 'flex',
+      width: '115%',
+      height: 200,
+      position: 'absolute',
+      display: 'flex',
+      bottom: -20,
+      left: 0,
     },
 });
 

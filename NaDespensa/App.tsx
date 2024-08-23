@@ -18,7 +18,10 @@ const App: React.FC = () => {
       // Verificar se o usuário está autenticado
       const userId = await AsyncStorage.getItem('userId');
 
-      if (userId) {
+      // Verificar se as notificações estão habilitadas
+      const notificationsEnabled = await AsyncStorage.getItem('notificationsEnabled');
+
+      if (userId && JSON.parse(notificationsEnabled)) {
         const isConfigured = await notificationService.configure();
         if (isConfigured) {
           console.log('Checking and sending immediate notifications.');

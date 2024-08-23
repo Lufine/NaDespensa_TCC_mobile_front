@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   container2: {
-    height: height * 0.005,
-    top: height *0.08,
+    height: height * 0.018,
+    top: height *0.06,
     bottom: 0,
     alignSelf: 'flex-start',
     flexDirection: 'row',
@@ -64,6 +64,6 @@ const styles = StyleSheet.create({
     maxWidth: 95,
     maxHeight: 60,
   },
-});
-
-export default NavigationFooter;
+  });
+  
+  export default NavigationFooter;

@@ -16,6 +16,9 @@ import BarcodeScannerScreen from '../screens/BarcodeScanner';
 import Profile from '../screens/Profile';
 import Config from '../screens/Config';
 import Help from '../screens/Help';
+import SetNewPassword from '../screens/SetNewPassword'
+import SetNewEmail from '../screens/SetNewEmail'
+import SetNewName from '../screens/SetNewName'
 
 const Stack = createStackNavigator();
 
@@ -38,6 +41,9 @@ const App = () => {
         <Stack.Screen name="Profile" component={Profile} options={{ title: 'Perfil' }} />
         <Stack.Screen name="Config" component={Config} options={{ title: 'Configurações' }} />
         <Stack.Screen name="Help" component={Help} options={{ title: 'Ajuda' }} />
+        <Stack.Screen name='SetNewPassword' component={SetNewPassword} options={{ title: 'Alterar Senha' }} />
+        <Stack.Screen name='SetNewEmail' component={SetNewEmail} options={{ title: 'Alterar E-mail' }} />
+        <Stack.Screen name='SetNewName' component={SetNewName} options={{ title: 'Alterar Nome de usuário' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

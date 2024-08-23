@@ -16,13 +16,9 @@ const ProfileScreen = ({ navigation, route }) => {
     navigation.navigate(screen, { userId });
   };
 
-  const handleTestNotification = async () => {
-    await notificationService.scheduleTestNotification();
-    alert("Notificação de teste agendada para 5 segundos.");
-  };
-
   return (
     <View style={styles.container}>
+      <Image style={styles.design} source={require('../assets/desingtopright.png')} />
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
@@ -38,20 +34,15 @@ const ProfileScreen = ({ navigation, route }) => {
         <Text style={styles.buttonText}>Salvos</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => handleNavigate('HelpOne')}>
+      <TouchableOpacity style={styles.button} onPress={() => handleNavigate('Help')}>
         <Text style={styles.buttonText}>Introdução</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => {
-        navigation.navigate('Login');
-      }}>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.sair}>Sair</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.testButton} onPress={handleTestNotification}>
-        <Text style={styles.buttonText}>Testar Notificação</Text>
-      </TouchableOpacity>
-      <NavigationFooter handleNavigate={handleNavigate} />
+      <NavigationFooter handleNavigate={handleNavigate} activeScreen="Profile" />
     </View>
   );
 };
@@ -62,10 +53,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
   },
+  design: {
+    width: 220,
+    height: 200,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   backContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: '20%',
+    marginTop: '25%',
   },
   back: {
     width: 20,
