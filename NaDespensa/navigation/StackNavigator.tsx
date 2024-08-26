@@ -19,6 +19,7 @@ import Help from '../screens/Help';
 import SetNewPassword from '../screens/SetNewPassword'
 import SetNewEmail from '../screens/SetNewEmail'
 import SetNewName from '../screens/SetNewName'
+import SetNewPhone from '../screens/SetNewPhone'
 
 const Stack = createStackNavigator();
 
@@ -44,6 +45,7 @@ const App = () => {
         <Stack.Screen name='SetNewPassword' component={SetNewPassword} options={{ title: 'Alterar Senha' }} />
         <Stack.Screen name='SetNewEmail' component={SetNewEmail} options={{ title: 'Alterar E-mail' }} />
         <Stack.Screen name='SetNewName' component={SetNewName} options={{ title: 'Alterar Nome de usuário' }} />
+        <Stack.Screen name='SetNewPhone' component={SetNewPhone} options={{ title: 'Alterar número de telefone' }} />        
       </Stack.Navigator>
     </NavigationContainer>
   );

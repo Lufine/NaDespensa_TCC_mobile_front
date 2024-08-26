@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ScrollView } from 'react-native';
 import axios from 'axios';
 
-const ChangeEmailScreen = ({ navigation, route }) => {
+const ChangePhoneNumberScreen = ({ navigation, route }) => {
     const [currentPassword, setCurrentPassword] = useState('');
-    const [newEmail, setNewEmail] = useState('');
-    const [confirmEmail, setConfirmEmail] = useState('');
+    const [newPhoneNumber, setNewPhoneNumber] = useState('');
+    const [confirmPhoneNumber, setConfirmPhoneNumber] = useState('');
     const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
 
     const { userId } = route.params;
@@ -16,32 +16,32 @@ const ChangeEmailScreen = ({ navigation, route }) => {
       });
     }, [navigation]);
 
-    const handleChangeEmail = async () => {
-      if (!currentPassword || !newEmail || !confirmEmail) {
+    const handleChangePhoneNumber = async () => {
+      if (!currentPassword || !newPhoneNumber || !confirmPhoneNumber) {
         Alert.alert('Erro', 'Todos os campos são obrigatórios');
         return;
       }
 
-      if (newEmail !== confirmEmail) {
-        Alert.alert('Erro', 'Os novos e-mails não coincidem');
+      if (newPhoneNumber !== confirmPhoneNumber) {
+        Alert.alert('Erro', 'Os novos números de telefone não coincidem');
         return;
       }
 
       try {
-        const response = await axios.put(`http://192.168.24.17:3000/users/${userId}/change-email`, {
+        const response = await axios.put(`http://192.168.24.17:3000/users/${userId}/change-phone-number`, {
           currentPassword,
-          newEmail,
+          newPhoneNumber,
         });
 
         if (response.data.success) {
-          Alert.alert('Sucesso', 'E-mail alterado com sucesso');
+          Alert.alert('Sucesso', 'Número de telefone alterado com sucesso');
           navigation.goBack();
         } else {
-          Alert.alert('Erro', response.data.message || 'Não foi possível alterar o e-mail. Tente novamente.');
+          Alert.alert('Erro', response.data.message || 'Não foi possível alterar o número de telefone. Tente novamente.');
         }
       } catch (error) {
         console.error(error);
-        Alert.alert('Erro', 'Senha atual incorreta. Não foi possível alterar o e-mail.');
+        Alert.alert('Erro', 'Senha atual incorreta. Não foi possível alterar o número de telefone.');
       }
     };
 
@@ -57,7 +57,7 @@ const ChangeEmailScreen = ({ navigation, route }) => {
             <Image style={styles.backIcon} source={require('../assets/back.png')} />
             <Text style={styles.backText}>Voltar</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Alterar e-mail</Text>
+          <Text style={styles.title}>Alterar número de telefone</Text>
           <View style={styles.inputContainerAtual}>
             <Text style={styles.textContainer}>Insira sua senha atual</Text>
             <TextInput
@@ -76,30 +76,32 @@ const ChangeEmailScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.textContainer}>Insira seu novo e-mail</Text>
+            <Text style={styles.textContainer}>Insira seu novo número de telefone</Text>
             <TextInput
-              placeholder="Novo e-mail"
-              value={newEmail}
-              onChangeText={setNewEmail}
+              placeholder="Novo número de telefone"
+              value={newPhoneNumber}
+              onChangeText={setNewPhoneNumber}
               style={styles.input}
+              keyboardType="phone-pad"
             />
-            <Image style={styles.icon} source={require('../assets/email.png')} />
+            <Image style={styles.icon} source={require('../assets/phone.png')} />
           </View>
           <View style={styles.inputContainer}>
-            <Text style={styles.textContainer}>Confirme seu novo e-mail</Text>
+            <Text style={styles.textContainer}>Confirme seu novo número de telefone</Text>
             <TextInput
-              placeholder="Confirmar novo e-mail"
-              value={confirmEmail}
-              onChangeText={setConfirmEmail}
+              placeholder="Confirmar novo número de telefone"
+              value={confirmPhoneNumber}
+              onChangeText={setConfirmPhoneNumber}
               style={styles.input}
+              keyboardType="phone-pad"
             />
-            <Image style={styles.icon} source={require('../assets/email.png')} />
+            <Image style={styles.icon} source={require('../assets/phone.png')} />
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
               <Text style={styles.cancelButtonText}>Cancelar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.saveButton} onPress={handleChangeEmail}>
+            <TouchableOpacity style={styles.saveButton} onPress={handleChangePhoneNumber}>
               <Text style={styles.saveButtonText}>Salvar</Text>
             </TouchableOpacity>
           </View>
@@ -211,4 +213,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangeEmailScreen;
+export default ChangePhoneNumberScreen;

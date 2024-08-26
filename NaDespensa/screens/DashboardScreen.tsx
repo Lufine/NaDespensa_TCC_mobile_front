@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import NavigationFooter from './FooterDespensa';
 
@@ -17,6 +18,16 @@ const DashboardScreen = ({ route, navigation }) => {
         headerShown: false,
     });
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUserData();
+      fetchItemCounts();
+      navigation.setOptions({
+          headerShown: false,
+      });
+    }, [])
+  );  
 
   const fetchUserData = async () => {
     try {

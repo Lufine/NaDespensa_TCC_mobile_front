@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Switch, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavigationFooter from './FooterConfig';
 import notificationService from './NotificationService'; // Certifique-se de ajustar o caminho
+import { useFocusEffect } from '@react-navigation/native';
 
 const SettingsScreen = ({ route, navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -26,11 +27,16 @@ const SettingsScreen = ({ route, navigation }) => {
     };
 
     loadSettings();
-    fetchUserData();
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
 
   const handleNavigate = (screen) => {
     navigation.navigate(screen, { userId });
@@ -130,7 +136,7 @@ const SettingsScreen = ({ route, navigation }) => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.infoItem}>
+          <TouchableOpacity style={styles.infoItem}  onPress={() => handleNavigate('SetNewPhone')}>
             <Image style={styles.icon} source={require('../assets/phone.png')} />
             <View style={styles.infoTextContainer}>
               <Text style={styles.infoTitle}>Telefone</Text>
