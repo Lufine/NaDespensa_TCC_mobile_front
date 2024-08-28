@@ -94,12 +94,12 @@ const DashboardScreen = ({ route, navigation }) => {
           <TouchableOpacity style={styles.button} onPress={() => handleNavigate('Recipes')}>
             <Text style={styles.buttonText}>Ver receitas NaDespensa</Text>
             <Image source={require('../assets/search.png')} style={styles.search}/>
-            <Image source={require('../assets/barcode.png')} style={styles.barcode}/>
+            {/* <Image source={require('../assets/barcode.png')} style={styles.barcode}/> */}
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => handleNavigate('AddProduct')}>
             <Text style={styles.buttonText}>Adicionar item NaDespensa</Text>
             <Image source={require('../assets/plus.png')} style={styles.add}/>
-            <Image source={require('../assets/barcode.png')} style={styles.barcode} />
+            {/* <Image source={require('../assets/barcode.png')} style={styles.barcode} /> */}
           </TouchableOpacity>
           </View>
           <NavigationFooter handleNavigate={handleNavigate} currentScreen="Dashboard" />
@@ -194,34 +194,35 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#78746D',
         textAlign: 'center',
-        marginBottom: 50,
+        marginBottom: 30,
     },
-    barcode: {
-        width: 30,
-        height: 30,
-        top: '-60%',
-        alignSelf: 'flex-end',
-        right: 10,
-    },
+    // barcode: {
+    //     width: 30,
+    //     height: 30,
+    //     top: '-60%',
+    //     alignSelf: 'flex-end',
+    //     right: 10,
+    // },
     search: {
         width: 17,
         height: 19,
-        top: '-35%',
+        top: '-92.5%',
         alignSelf: 'flex-start',
         left: 10,
     },
     add: {
         width: 20,
         height: 20,
-        top: '-35%',
+        top: '-92.5%',
         alignSelf: 'flex-start',
         left: 10,
     },
     button:{
-        marginTop: -30,
+        marginTop: 20,
     },
     buttonText: {
         color: '#78746D',
+        marginTop: -30,
         fontSize: 16,
         backgroundColor: 'transparent', 
         borderWidth: 1, 

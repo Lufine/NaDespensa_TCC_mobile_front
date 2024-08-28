@@ -10,16 +10,98 @@ const RegisterScreen = ({ navigation }) => {
   const [senha, setSenha] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
-  }, [navigation]); 
+  }, [navigation]);
+
+  // Função de validação do nome de usuário
+  const checkUsernameAvailability = async (username) => {
+    if (!username || username.length < 3) {
+      Alert.alert('Erro', 'Nome de usuário deve ter pelo menos 3 caracteres.');
+      return false;
+    }
+
+    try {
+      const response = await axios.post('http://192.168.24.17:3000/check-username', { nome: username });
+      return response.data.isAvailable;
+    } catch (error) {
+      console.error('Error checking username:', error);
+      Alert.alert('Erro', 'Erro ao verificar nome de usuário. Por favor, tente novamente.');
+      return false; // Retornar falso se houver um erro
+    }
+  };
+
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex simples para validar e-mail
+    return re.test(String(email).toLowerCase());
+  };
+
+  // Função de validação de telefone no formato (XX) XXXXX-XXXX
+  const isValidPhoneNumber = (telefone) => {
+    const regex = /^\d{11}$/;
+    return regex.test(telefone);
+  };
+
+  // Função de validação de data de nascimento
+  const isValidDateOfBirth = (date) => {
+    const regex = /^\d{2}[-/]\d{2}[-/]\d{4}$/; // Formato esperado DD-MM-AAAA ou DD/MM/AAAA
+    if (!regex.test(date)) return false;
+
+    const [day, month, year] = date.split(/[-/]/).map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    if (dateObj.getFullYear() !== year || dateObj.getMonth() !== month - 1 || dateObj.getDate() !== day) return false;
+
+    const currentDate = new Date();
+    const minDate = new Date();
+    minDate.setFullYear(currentDate.getFullYear() - 120); // Máximo de 120 anos atrás
+    const maxDate = new Date();
+    maxDate.setFullYear(currentDate.getFullYear() - 13); // No mínimo 13 anos de idade
+
+    return dateObj >= minDate && dateObj <= maxDate;
+  };
+
+  const validatePassword = (password) => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasMinLength = password.length >= 8;
+    return hasUpperCase && hasLowerCase && hasNumber && hasMinLength;
+  };
 
   const handleRegister = async () => {
     if (!nome || !email || !dataNascimento || !telefone || !senha) {
       Alert.alert('Erro', 'Todos os campos são obrigatórios');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      Alert.alert('Erro', 'Por favor, insira um e-mail válido.');
+      return;
+    }
+
+    if (!isValidPhoneNumber(telefone)) {
+      Alert.alert('Erro', 'O telefone deve estar no formato (XX) XXXXX-XXXX');
+      return;
+    }
+
+    if (!isValidDateOfBirth(dataNascimento)) {
+      Alert.alert('Erro', 'Data de nascimento inválida. Use o formato DD-MM-AAAA ou DD/MM/AAAA.');
+      return;
+    }
+
+    if (!validatePassword(senha)) {
+      Alert.alert(
+        'Erro na Senha',
+        'A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma letra minúscula e um número.'
+      );
+      return;
+    }
+
+    const isUsernameAvailable = await checkUsernameAvailability(nome);
+    if (!isUsernameAvailable) {
+      Alert.alert('Erro', 'Nome de usuário já existe ou é inválido. Por favor, escolha outro.');
       return;
     }
 
@@ -39,6 +121,7 @@ const RegisterScreen = ({ navigation }) => {
       }
     } catch (error) {
       console.error(error);
+      Alert.alert('Erro', 'Ocorreu um erro ao registrar. Por favor, tente novamente.');
     }
   };
 

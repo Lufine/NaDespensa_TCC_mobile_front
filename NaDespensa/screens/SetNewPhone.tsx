@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ScrollView } from 'react-native';
 import axios from 'axios';
 
+// Função de validação de telefone no formato (XX) XXXXX-XXXX
+const isValidPhoneNumber = (phoneNumber) => {
+  const regex = /^\d{11}$/; // Modificar para o formato desejado se necessário
+  return regex.test(phoneNumber);
+};
+
 const ChangePhoneNumberScreen = ({ navigation, route }) => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPhoneNumber, setNewPhoneNumber] = useState('');
@@ -27,6 +33,11 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
         return;
       }
 
+      if (!isValidPhoneNumber(newPhoneNumber)) {
+        Alert.alert('Erro', 'Número de telefone inválido. Deve ter 11 dígitos.');
+        return;
+      }
+
       try {
         const response = await axios.put(`http://192.168.24.17:3000/users/${userId}/change-phone-number`, {
           currentPassword,
@@ -41,7 +52,7 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
         }
       } catch (error) {
         console.error(error);
-        Alert.alert('Erro', 'Senha atual incorreta. Não foi possível alterar o número de telefone.');
+        Alert.alert('Erro', 'Não foi possível alterar o número de telefone. Tente novamente.');
       }
     };
 
@@ -83,6 +94,7 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
               onChangeText={setNewPhoneNumber}
               style={styles.input}
               keyboardType="phone-pad"
+              maxLength={11} // Limitar o comprimento do input
             />
             <Image style={styles.icon} source={require('../assets/phone.png')} />
           </View>
@@ -94,6 +106,7 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
               onChangeText={setConfirmPhoneNumber}
               style={styles.input}
               keyboardType="phone-pad"
+              maxLength={11} // Limitar o comprimento do input
             />
             <Image style={styles.icon} source={require('../assets/phone.png')} />
           </View>
@@ -108,7 +121,7 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
         </View>
       </ScrollView>
     );
-  };
+};
 
 const styles = StyleSheet.create({
   container: {

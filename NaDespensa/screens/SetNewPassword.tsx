@@ -9,32 +9,45 @@ const ChangePasswordScreen = ({ navigation, route }) => {
     const [isCurrentPasswordVisible, setIsCurrentPasswordVisible] = useState(false);
     const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
-  
-    const { userId } = route.params; // Obtendo userId dos parâmetros de navegação
-  
+
+    const { userId } = route.params;
+
     useEffect(() => {
       navigation.setOptions({
         headerShown: false,
       });
     }, [navigation]);
-  
+
+    const validatePassword = (password) => {
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumber = /\d/.test(password);
+      const hasMinLength = password.length >= 8;
+      return hasUpperCase && hasLowerCase && hasNumber && hasMinLength;
+    };
+
     const handleChangePassword = async () => {
       if (!currentPassword || !newPassword || !confirmPassword) {
         Alert.alert('Erro', 'Todos os campos são obrigatórios');
         return;
       }
-  
+
       if (newPassword !== confirmPassword) {
         Alert.alert('Erro', 'As novas senhas não coincidem');
         return;
       }
-  
+
+      if (!validatePassword(newPassword)) {
+        Alert.alert('Erro', 'A nova senha não atende aos requisitos de segurança');
+        return;
+      }
+
       try {
         const response = await axios.put(`http://192.168.24.17:3000/users/${userId}/change-password`, {
           oldPassword: currentPassword,
           newPassword: newPassword,
         });
-  
+
         if (response.data.success) {
           Alert.alert('Sucesso', 'Senha alterada com sucesso');
           navigation.goBack();
@@ -46,11 +59,11 @@ const ChangePasswordScreen = ({ navigation, route }) => {
         Alert.alert('Erro', 'Não foi possível alterar a senha. Tente novamente.');
       }
     };
-  
-    const togglePasswordVisibility = (setPasswordVisible) => {
-      setPasswordVisible(prevState => !prevState);
+
+    const togglePasswordVisibility = (setter) => {
+      setter(prevState => !prevState);
     };
-  
+
     return (
       <ScrollView style={styles.container}>
         <Image style={styles.designTopRight} source={require('../assets/desingtopright.png')} />
@@ -60,7 +73,7 @@ const ChangePasswordScreen = ({ navigation, route }) => {
             <Text style={styles.backText}>Voltar</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Alterar senha</Text>
-          <View style={styles.inputContainerAtual}>
+          <View style={styles.inputContainer}>
             <Text style={styles.textContainer}>Insira sua senha atual</Text>
             <TextInput
               placeholder="Senha atual"
@@ -175,13 +188,9 @@ const styles = StyleSheet.create({
     color: '#3CB371',
     marginBottom: 15,
   },
-  inputContainerAtual:{
+  inputContainer:{
     position: 'relative',
     marginBottom: 30,
-  },
-  inputContainer: {
-    position: 'relative',
-    marginBottom: 15,
   },
   input: {
     borderWidth: 1,
