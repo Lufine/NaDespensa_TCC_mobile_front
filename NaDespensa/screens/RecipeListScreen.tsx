@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, ActivityIndicator, Alert, Switch  } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, ActivityIndicator, Alert, Switch } from 'react-native';
 import axios from 'axios';
 
 const parseRecipesFromText = (text) => {
@@ -115,6 +115,29 @@ const RecipesScreen = ({ route, navigation }) => {
     );
   }
 
+  if (products.length === 0) {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
+          <Image style={styles.back} source={require('../assets/back.png')} />
+          <Text style={styles.voltar}>Voltar</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Receitas</Text>
+        <View style={styles.emptyContainer}>
+          <Image source={require('../assets/imageRecipes.png')} style={styles.emptyImage} />
+          <Text style={styles.emptyText}>Nenhum produto disponível</Text>
+          <Text style={styles.suggestionText}>Adicione produtos para buscar receitas.</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AddProduct', { userId })}
+          style={styles.addButton}
+        >
+          <Text style={styles.addButtonText}>Adicionar Produto</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
@@ -123,16 +146,15 @@ const RecipesScreen = ({ route, navigation }) => {
       </TouchableOpacity>
       <Text style={styles.title}>Receitas</Text>
       <View style={styles.optionContainer}>
-      <Text style={styles.optionText}>Receitas exclusivas para ingredientes selecionados?</Text>
-      <Switch
-        value={exclusive}
-        onValueChange={() => setExclusive(!exclusive)}
-        trackColor={{ false: '#C0C0C0', true: '#3CB371' }}
-        thumbColor="#FFF"
-        style={{marginTop: -55, marginBottom: 10}}
-      />
-    </View>
-
+        <Text style={styles.optionText}>Receitas exclusivas para ingredientes selecionados?</Text>
+        <Switch
+          value={exclusive}
+          onValueChange={() => setExclusive(!exclusive)}
+          trackColor={{ false: '#C0C0C0', true: '#3CB371' }}
+          thumbColor="#FFF"
+          style={{ marginTop: -55, marginBottom: 10 }}
+        />
+      </View>
       <ScrollView style={styles.ingredientsContainer}>
         {products.map((product, index) => (
           <TouchableOpacity
@@ -187,6 +209,35 @@ const styles = StyleSheet.create({
     color: '#3CB371',
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#78746D',
+    marginBottom: 10,
+  },
+  suggestionText: {
+    fontSize: 16,
+    color: '#78746D',
+  },
+  addButton: {
+    backgroundColor: '#3CB371',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#FFF',
+    fontSize: 16,
   },
   ingredientsContainer: {
     flexDirection: 'column',
