@@ -34,6 +34,10 @@ const ProductListScreen = ({ route, navigation }) => {
     }, [])
   );
 
+  const handleNavigate = (screen) => {
+    navigation.navigate(screen, { userId });
+  };
+
   const handleEditProduct = (product) => {
     navigation.navigate('EditProduct', { product });
   };
@@ -121,7 +125,7 @@ const ProductListScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
+      <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>
@@ -163,8 +167,8 @@ const styles = StyleSheet.create({
   backContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: 30,
-    marginBottom: 10,
+    marginTop: '15%',
+    marginBottom: '5%',
   },
   back: {
     width: 20,

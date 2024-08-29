@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import axios from 'axios';
 import { format, parse, isValid } from 'date-fns';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import DashboardScreen from './DashboardScreen';
 
 const AddProductScreen = ({ route, navigation }) => {
   const [name, setName] = useState('');
@@ -14,16 +14,18 @@ const AddProductScreen = ({ route, navigation }) => {
   const [price, setPrice] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [scanning, setScanning] = useState(false); // Controle de leitura
+  const [scanning, setScanning] = useState(false);
 
   const { userId } = route.params;
-  const cameraRef = useRef(null);
 
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasCameraPermission(status === 'granted');
     })();
+    navigation.setOptions({
+      headerShown: false,
+    });
   }, []);
 
   const validateDate = (date) => {
@@ -36,6 +38,10 @@ const AddProductScreen = ({ route, navigation }) => {
     } else {
       return null;
     }
+  };
+
+  const handleNavigate = (screen) => {
+    navigation.navigate(screen, { userId });
   };
 
   const handleAddProduct = async () => {
@@ -80,12 +86,12 @@ const AddProductScreen = ({ route, navigation }) => {
   };
 
   const handleBarcodeScanned = ({ data }) => {
-    if (!scanning) { // Verifica se o scanner está ativo
-      setScanning(true); // Define como ativo
+    if (!scanning) {
+      setScanning(true);
       setBarcodeInput(data);
       fetchProductDetails(data);
       setModalVisible(false);
-      setTimeout(() => setScanning(false), 1000); // Reativa após 1 segundo
+      setTimeout(() => setScanning(false), 1000);
     }
   };
 
@@ -123,59 +129,93 @@ const AddProductScreen = ({ route, navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Button title="Escanear Código de Barras" onPress={handleOpenScanner} />
+      <Image style={styles.design} source={require('../assets/desingtopright.png')} />
+      <TouchableOpacity onPress={() => navigation.goBack()}style={styles.backContainer}>
+        <Image style={styles.back} source={require('../assets/back.png')} />
+        <Text style={styles.voltar}>Voltar</Text>
+      </TouchableOpacity>
+        <Text style={styles.title}>Adicionar Produto</Text>
 
-        <Text>Imagem do Produto</Text>
+        <View style={styles.inputContainer}>
+          <TouchableOpacity onPress={handleOpenScanner} style={styles.iconButton}>
+            <Image source={require('../assets/barcode.png')} style={styles.icon} />
+          </TouchableOpacity>
+          <TextInput
+            placeholder="Código de Barras"
+            value={barcodeInput}
+            onChangeText={(text) => {
+              setBarcodeInput(text);
+              if (text.length === 13) {
+                fetchProductDetails(text);
+              }
+            }}
+            style={styles.input}
+          />
+          <TouchableOpacity onPress={handleOpenScanner} style={styles.iconButton}>
+            <Image source={require('../assets/cam.png')} style={styles.icon} />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={handleOpenScanner}>
+        <Text style={styles.barcodetext}>Escanear código de barras</Text>
+        </TouchableOpacity>
+        <Text style={{color: '#78746D'}}>Imagem do Produto</Text>
         {thumbnail ? (
           <Image source={{ uri: thumbnail }} style={styles.thumbnail} />
         ) : (
-          <Text style={styles.hiddenImageText}>Imagem não disponível</Text>
+          <Image source={require('../assets/produto-sem-imagem.png')} style={styles.thumbnail} />
         )}
 
-        <Text>Nome</Text>
-        <TextInput
-          placeholder="Nome"
-          value={name}
-          onChangeText={setName}
-          style={styles.input}
-        />
-        <Text>Quantidade</Text>
-        <TextInput
-          placeholder="Quantidade"
-          value={quantity}
-          onChangeText={setQuantity}
-          style={styles.input}
-          keyboardType="numeric"
-        />
-        <Text>Data de Validade (DD/MM/YYYY ou DD-MM-YYYY)</Text>
-        <TextInput
-          placeholder="Data de Validade"
-          value={expiryDate}
-          onChangeText={setExpiryDate}
-          style={styles.input}
-        />
+        <View style={styles.inputContainer}>
+          <Image source={require('../assets/nameprod.png')} style={styles.icon} />
+          <TextInput
+            placeholder="Nome"
+            value={name}
+            onChangeText={setName}
+            style={styles.input}
+          />
+        </View>
 
-        <Text>Preço</Text>
-        <TextInput
-          placeholder="Preço"
-          value={price}
-          onChangeText={setPrice}
-          style={styles.input}
-          keyboardType="numeric"
-        />
+        <View style={styles.inputContainer}>
+          <Image source={require('../assets/imagequantidade.png')} style={styles.icon} />
+          <TextInput
+            placeholder="Quantidade"
+            value={quantity}
+            onChangeText={setQuantity}
+            style={styles.input}
+            keyboardType="numeric"
+          />
+        </View>
 
-        <Text>Código de Barras</Text>
-        <TextInput
-          placeholder="Código de Barras"
-          value={barcodeInput}
-          onChangeText={setBarcodeInput}
-          style={styles.input}
-        />
-        <Button title="Buscar Produto" onPress={() => fetchProductDetails(barcodeInput)} />
+        <View style={styles.inputContainer}>
+          <Image source={require('../assets/clock.png')} style={styles.icon} />
+          <TextInput
+            placeholder="Data de Validade (DD/MM/YYYY)"
+            value={expiryDate}
+            onChangeText={setExpiryDate}
+            style={styles.input}
+          />
+        </View>
 
-        <Button title="Adicionar Produto" onPress={handleAddProduct} />
+        <View style={styles.inputContainer}>
+          <Image source={require('../assets/price.png')} style={styles.icon} />
+          <TextInput
+            placeholder="Preço"
+            value={price}
+            onChangeText={setPrice}
+            style={styles.input}
+            keyboardType="numeric"
+          />
+        </View>
 
-        {/* Modal para Scanner de Código de Barras */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.cancelButton} onPress={() => handleNavigate('Dashboard')}>
+            <Text style={styles.cancelButtonText}>Cancelar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.saveButton} onPress={handleAddProduct}>
+            <Text style={styles.saveButtonText}>Adicionar</Text>
+          </TouchableOpacity>
+        </View>
+
         <Modal
           visible={modalVisible}
           transparent={true}
@@ -200,23 +240,75 @@ const AddProductScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFF',
     justifyContent: 'center',
     padding: 20,
   },
-  input: {
+  design: {
+    width: 200,
+    height: 150,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  backContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginTop: '0%',
+  },
+  back: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
+  },
+  voltar: {
+    color: '#3CB371',
+    fontSize: 16,
+  },
+  title: {
+    color: '#3CB371',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 20,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 10,
+    borderColor: '#3CB371',
     borderRadius: 5,
+    marginBottom: 10,
+  },
+  input: {
+    flex: 1,
+    padding: 10,
+    color: '#78746D',
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginHorizontal: 10,
+  },
+  barcodetext:{
+    marginTop: -5,
+    marginBottom: 10,
+    alignSelf: 'center',
+    color: '#1877F2',
   },
   thumbnail: {
     width: 150,
     height: 150,
-    marginVertical: 10,
+    marginVertical: 15,
+    alignSelf: 'center',
     borderWidth: 1,
-    margin: 'auto',
     borderColor: '#ccc',
+  },
+  barcodeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconButton: {
+    padding: 10,
   },
   hiddenImageText: {
     color: '#888',
@@ -239,6 +331,34 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontSize: 16,
     color: 'black',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cancelButton: {
+    backgroundColor: '#FF0000',
+    borderRadius: 5,
+    padding: 15,
+    alignItems: 'center',
+    width: '48%',
+  },
+  cancelButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  saveButton: {
+    backgroundColor: '#3CB371',
+    borderRadius: 5,
+    padding: 15,
+    alignItems: 'center',
+    width: '48%',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

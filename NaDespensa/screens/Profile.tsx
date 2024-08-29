@@ -19,7 +19,7 @@ const ProfileScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
+      <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>
@@ -108,7 +108,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#FF0000',
     fontSize: 18,
-    marginTop: 20,
+    marginTop: 15,
+    // fontWeight: 'bold',
   },
 });
 

@@ -3,19 +3,31 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, ActivityIn
 import axios from 'axios';
 
 const parseRecipesFromText = (text) => {
-  const recipeSections = text.split(/(?=\*\d+\.\s)/).filter(section => section.trim() !== '');
+  // Divide o texto em seções de receita baseadas no formato ## Título ##
+  const recipeSections = text.split(/(?=##\s*.*?\s*##)/).filter(section => section.trim() !== '');
 
   return recipeSections.map((section, index) => {
-    const titleMatch = section.match(/\*\d+\.\s*(.*?)\*\*/);
+    // Extrai o título no formato ## Título ##
+    const titleMatch = section.match(/##\s*(.*?)\s*##/);
     const title = titleMatch ? titleMatch[1].trim() : `Receita ${index + 1}`;
-    const recipeContent = section.replace(/\*\d+\.\s.*?\*\*/, '').trim();
+
+    // Extrai o conteúdo no formato **Conteúdo**, incluindo ingredientes e preparo
+    const contentStartIndex = section.indexOf("**");
+    let recipeContent = contentStartIndex !== -1 ? section.substring(contentStartIndex).trim() : '';
+
+    // Remove os asteriscos ** do conteúdo
+    recipeContent = recipeContent.replace(/\*\*(.*?)\*\*/g, "-$1");
+
     console.log("Título da receita:", title);
+    console.log("Conteúdo da receita:", recipeContent);
+
     return {
       title,
       content: recipeContent
     };
   });
 };
+
 
 const RecipesScreen = ({ route, navigation }) => {
   const { userId } = route.params;
@@ -45,6 +57,10 @@ const RecipesScreen = ({ route, navigation }) => {
       headerShown: false,
     });
   }, [userId]);
+
+  const handleNavigate = (screen) => {
+    navigation.navigate(screen, { userId });
+  };
 
   const toggleIngredientSelection = (ingredientName) => {
     const updatedProducts = products.map(product => {
@@ -140,7 +156,7 @@ const RecipesScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
+      <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>
@@ -152,7 +168,7 @@ const RecipesScreen = ({ route, navigation }) => {
           onValueChange={() => setExclusive(!exclusive)}
           trackColor={{ false: '#C0C0C0', true: '#3CB371' }}
           thumbColor="#FFF"
-          style={{ marginTop: -55, marginBottom: 10 }}
+          style={{ marginTop: '-11%', marginBottom: 10, alignSelf: 'flex-end' }}
         />
       </View>
       <ScrollView style={styles.ingredientsContainer}>
@@ -192,8 +208,8 @@ const styles = StyleSheet.create({
   backContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: 30,
-    marginBottom: 10,
+    marginTop: '15%',
+    marginBottom: '5%',
   },
   back: {
     width: 20,
@@ -240,9 +256,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   ingredientsContainer: {
-    flexDirection: 'column',
-    flexWrap: 'wrap',
+    // flexDirection: 'row',
+    alignSelf: 'auto',
+    // flexWrap: 'wrap',
     marginBottom: 20,
+    left: 0,
   },
   ingredientButton: {
     backgroundColor: '#FFF',
@@ -258,7 +276,7 @@ const styles = StyleSheet.create({
   },
   ingredientButtonText: {
     fontSize: 16,
-    color: '#78746D',
+    color: '#78746D',textAlign: 'center',
   },
   button: {
     backgroundColor: '#3CB371',
@@ -276,7 +294,7 @@ const styles = StyleSheet.create({
   disabledButton: {
     backgroundColor: '#C0C0C0',
     borderWidth: 1,
-    borderColor: '#3CB371',
+    borderColor: '#C0C0C0',
   },
   scrollView: {
     flex: 1,
@@ -331,7 +349,6 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 16,
     color: '#78746D',
-    marginBottom: 5,
   },
   optionButton: {
     backgroundColor: '#FFF',
