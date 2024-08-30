@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback  } from 'react';
+import { View, Text, TextInput, StyleSheet, Alert, Image, Modal, TouchableOpacity, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { format, parse, isValid } from 'date-fns';
 import DashboardScreen from './DashboardScreen';
@@ -28,6 +29,19 @@ const AddProductScreen = ({ route, navigation }) => {
     });
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      // Reseta os estados ao entrar na tela
+      setName('');
+      setQuantity('');
+      setExpiryDate('');
+      setBarcodeInput('');
+      setThumbnail('');
+      setPrice('');
+      setModalVisible(false);
+    }, [])
+  );
+
   const validateDate = (date) => {
     const parsedDate1 = parse(date, 'dd-MM-yyyy', new Date());
     const parsedDate2 = parse(date, 'dd/MM/yyyy', new Date());
@@ -38,6 +52,27 @@ const AddProductScreen = ({ route, navigation }) => {
     } else {
       return null;
     }
+  };
+
+  const formatDate = (text) => {
+    // Remove tudo que não for número
+    let cleaned = text.replace(/\D/g, '');
+    
+    // Se o usuário está deletando (string vazia ou com menos de 2 caracteres), apenas retorna o texto limpo
+    if (cleaned.length === 0) return '';
+    if (cleaned.length <= 2) return cleaned;
+    
+    // Adiciona barras (/) automaticamente conforme o usuário digita
+    if (cleaned.length <= 4) return cleaned.slice(0, 2) + '/' + cleaned.slice(2);
+    return cleaned.slice(0, 2) + '/' + cleaned.slice(2, 4) + '/' + cleaned.slice(4, 8);
+  };
+
+  const formatPrice = (text) => {
+    // Remove tudo que não for número
+    let cleaned = text.replace(/\D/g, '');
+    // Adiciona vírgula para separar os centavos
+    cleaned = (parseFloat(cleaned) / 100).toFixed(2).replace('.', ',');
+    return cleaned;
   };
 
   const handleNavigate = (screen) => {
@@ -127,113 +162,114 @@ const AddProductScreen = ({ route, navigation }) => {
   };
 
   return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
       <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-      <TouchableOpacity onPress={() => navigation.goBack()}style={styles.backContainer}>
-        <Image style={styles.back} source={require('../assets/back.png')} />
-        <Text style={styles.voltar}>Voltar</Text>
-      </TouchableOpacity>
-        <Text style={styles.title}>Adicionar Produto</Text>
-
-        <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={handleOpenScanner} style={styles.iconButton}>
-            <Image source={require('../assets/barcode.png')} style={styles.icon} />
-          </TouchableOpacity>
-          <TextInput
-            placeholder="Código de Barras"
-            value={barcodeInput}
-            onChangeText={(text) => {
-              setBarcodeInput(text);
-              if (text.length === 13) {
-                fetchProductDetails(text);
-              }
-            }}
-            style={styles.input}
-          />
-          <TouchableOpacity onPress={handleOpenScanner} style={styles.iconButton}>
-            <Image source={require('../assets/cam.png')} style={styles.icon} />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={handleOpenScanner}>
-        <Text style={styles.barcodetext}>Escanear código de barras</Text>
+      <ScrollView>
+        <TouchableOpacity onPress={() => navigation.goBack()}style={styles.backContainer}>
+          <Image style={styles.back} source={require('../assets/back.png')} />
+          <Text style={styles.voltar}>Voltar</Text>
         </TouchableOpacity>
-        <Text style={{color: '#78746D'}}>Imagem do Produto</Text>
-        {thumbnail ? (
-          <Image source={{ uri: thumbnail }} style={styles.thumbnail} />
-        ) : (
-          <Image source={require('../assets/produto-sem-imagem.png')} style={styles.thumbnail} />
-        )}
-
-        <View style={styles.inputContainer}>
-          <Image source={require('../assets/nameprod.png')} style={styles.icon} />
-          <TextInput
-            placeholder="Nome"
-            value={name}
-            onChangeText={setName}
-            style={styles.input}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Image source={require('../assets/imagequantidade.png')} style={styles.icon} />
-          <TextInput
-            placeholder="Quantidade"
-            value={quantity}
-            onChangeText={setQuantity}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Image source={require('../assets/clock.png')} style={styles.icon} />
-          <TextInput
-            placeholder="Data de Validade (DD/MM/YYYY)"
-            value={expiryDate}
-            onChangeText={setExpiryDate}
-            style={styles.input}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Image source={require('../assets/price.png')} style={styles.icon} />
-          <TextInput
-            placeholder="Preço"
-            value={price}
-            onChangeText={setPrice}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.cancelButton} onPress={() => handleNavigate('Dashboard')}>
-            <Text style={styles.cancelButtonText}>Cancelar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.saveButton} onPress={handleAddProduct}>
-            <Text style={styles.saveButtonText}>Adicionar</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Modal
-          visible={modalVisible}
-          transparent={true}
-          animationType="slide"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <BarCodeScanner
-              onBarCodeScanned={handleBarcodeScanned}
-              style={StyleSheet.absoluteFillObject}
+          <Text style={styles.title}>Adicionar produto</Text>
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={handleOpenScanner} style={styles.iconButton}>
+              <Image source={require('../assets/barcode.png')} style={styles.icon} />
+            </TouchableOpacity>
+            <TextInput
+              placeholder="Código de Barras"
+              value={barcodeInput}
+              onChangeText={(text) => {
+                setBarcodeInput(text);
+                if (text.length === 13) {
+                  fetchProductDetails(text);
+                }
+              }}
+              style={styles.input}
             />
-            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeButtonText}>Fechar</Text>
+            <TouchableOpacity onPress={handleOpenScanner} style={styles.iconButton}>
+              <Image source={require('../assets/cam.png')} style={styles.icon} />
             </TouchableOpacity>
           </View>
-        </Modal>
+          <TouchableOpacity onPress={handleOpenScanner}>
+          <Text style={styles.barcodetext}>Escanear código de barras</Text>
+          </TouchableOpacity>
+          <Text style={{color: '#78746D'}}>Imagem do Produto</Text>
+          {thumbnail ? (
+            <Image source={{ uri: thumbnail }} style={styles.thumbnail} />
+          ) : (
+            <Image source={require('../assets/produto-sem-imagem.png')} style={styles.thumbnail} />
+          )}
+          <View style={styles.inputContainer}>
+            <Image source={require('../assets/nameprod.png')} style={styles.icon} />
+            <TextInput
+              placeholder="Nome"
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Image source={require('../assets/imagequantidade.png')} style={styles.icon} />
+            <TextInput
+              placeholder="Quantidade"
+              value={quantity}
+              onChangeText={setQuantity}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Image source={require('../assets/clock.png')} style={styles.icon} />
+            <TextInput
+              placeholder="Data de Validade (DD/MM/YYYY)"
+              value={expiryDate}
+              onChangeText={(text) => setExpiryDate(formatDate(text))}
+              keyboardType="numeric"
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Image source={require('../assets/price.png')} style={styles.icon} />
+            <TextInput
+              placeholder="Preço"
+              value={price}
+              onChangeText={(text) => setPrice(formatPrice(text))}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => handleNavigate('Dashboard')}>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.saveButton} onPress={handleAddProduct}>
+              <Text style={styles.saveButtonText}>Adicionar</Text>
+            </TouchableOpacity>
+          </View>
+          <Modal
+            visible={modalVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <BarCodeScanner
+                onBarCodeScanned={handleBarcodeScanned}
+                style={StyleSheet.absoluteFillObject}
+              />
+              <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                <Text style={styles.closeButtonText}>Fechar</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+      </ScrollView>
       </View>
     </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -254,7 +290,7 @@ const styles = StyleSheet.create({
   backContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: '0%',
+    marginTop: '20%',
   },
   back: {
     width: 20,

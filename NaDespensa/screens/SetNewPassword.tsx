@@ -132,7 +132,7 @@ const ChangePasswordScreen = ({ navigation, route }) => {
             {'\n'}• Senha deve ter 8 caracteres;
             {'\n'}• Conter pelo menos 1 (um) número;
             {'\n'}• Conter pelo menos 1 (uma) letra maiúscula;
-            {'\n'}• Conter pelo menos 1 (uma) letra minúscula;
+            {'\n'}• Conter pelo menos 1 (uma) letra minúscula.
           </Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>

@@ -48,11 +48,11 @@ const ProductListScreen = ({ route, navigation }) => {
       "Você tem certeza que deseja excluir este produto?",
       [
         {
-          text: "Cancelar",
+          text: "Não",
           style: "cancel"
         },
         {
-          text: "Excluir",
+          text: "Sim",
           onPress: async () => {
             try {
               const response = await axios.delete(`http://192.168.24.17:3000/products/${productId}`);
@@ -88,10 +88,24 @@ const ProductListScreen = ({ route, navigation }) => {
     }
   };
 
+  const getCalendarIcon = (expiryDate) => {
+    const today = dayjs();
+    const expiry = dayjs(expiryDate);
+    const diffDays = expiry.diff(today, 'day');
+  
+    if (diffDays < 0) {
+      return require('../assets/calendarred.png');
+    } else if (diffDays <= 5) {
+      return require('../assets/calendaryellow.png');
+    } else {
+      return require('../assets/calendargreen.png');
+    }
+  };
+
   const handleSearch = (text) => {
     setSearchText(text);
     if (text === '') {
-      setFilteredProducts(products);  // Mostra todos os produtos se o campo de pesquisa estiver vazio
+      setFilteredProducts(products);
     } else {
       const filtered = products.filter(product =>
         product.name.toLowerCase().includes(text.toLowerCase())
@@ -109,26 +123,40 @@ const ProductListScreen = ({ route, navigation }) => {
       />
       <View style={styles.productDetails}>
         <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productDate}>Quantidade: {item.quantity}</Text>
         <Text style={styles.productDate}>Data de validade: {dayjs(item.expiry_date).format('DD/MM/YYYY')}</Text>
-        <Text style={getItemStyle(item.expiry_date)}>Vencimento em {dayjs(item.expiry_date).diff(dayjs(), 'day')} dias</Text>
+        <View style={styles.dateRow}>
+          <Image style={styles.calendarIcon} source={getCalendarIcon(item.expiry_date)} />
+          <Text style={getItemStyle(item.expiry_date)}>Vencimento em {dayjs(item.expiry_date).diff(dayjs(), 'day')} dias</Text>
+        </View>
         <View style={styles.actionButtons}>
-          <TouchableOpacity onPress={() => handleEditProduct(item)} style={styles.editButton}>
-            <Text style={styles.editButtonText}>Editar</Text>
+          <TouchableOpacity onPress={() => handleEditProduct(item)} style={styles.editar}>
+            <Image style={styles.edit} source={require('../assets/edit.png')} />
+            <View style={styles.editButton}>
+              <Text style={styles.editButtonText}>Editar</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deleteButton}>
-            <Text style={styles.deleteButtonText}>Excluir</Text>
+          <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deletar}>
+            <Image style={styles.delete} source={require('../assets/excluir.png')} />
+            <View style={styles.deleteButton}>
+              <Text style={styles.deleteButtonText}>Excluir</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
     </View>
   );
+  
 
   return (
     <View style={styles.container}>
+      <Image style={styles.design} source={require('../assets/desingtopright.png')} />
       <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>
+      <Text style={styles.title}>Lista de produtos</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'space-around', marginVertical: 15, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
       <TextInput
         style={styles.searchInput}
         placeholder="Pesquise NaDespensa"
@@ -164,6 +192,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
   },
+  design: {
+    width: 200,
+    height: 150,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   backContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -178,6 +213,11 @@ const styles = StyleSheet.create({
   voltar: {
     color: '#3CB371',
     fontSize: 16,
+  },
+  title: {
+    color: '#3CB371',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   searchInput: {
     borderColor: '#A9E6AF',
@@ -216,7 +256,7 @@ const styles = StyleSheet.create({
   },
   productDate: {
     fontSize: 14,
-    color: '#6C6C6C',
+    color: '#1E1E1E',
     marginBottom: 5,
   },
   expiredItemText: {
@@ -224,7 +264,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   warningItemText: {
-    color: '#FFA500',
+    color: '#FF6B00',
     fontSize: 14,
   },
   normalItemText: {
@@ -235,29 +275,47 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
   },
+  editar:{
+    flexDirection: 'row',
+  },
+  edit:{
+    top: '3%',
+    left: 5,
+    width: 20,
+    height: 20,
+  },
   editButton: {
-    backgroundColor: '#007BFF',
+    // backgroundColor: '#007BFF',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
     marginRight: 10,
   },
   editButtonText: {
-    color: '#fff',
+    color: '#007BFF',
+  },
+  deletar:{
+    flexDirection: 'row',
+  },
+  delete:{
+    top: '3%',
+    left: 5,
+    width: 20,
+    height: 20,
   },
   deleteButton: {
-    backgroundColor: '#FF4C4C',
+    // backgroundColor: '#FF4C4C',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
   },
   deleteButtonText: {
-    color: '#fff',
+    color: '#FF4C4C',
   },
   addButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#3CB371',
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 15,
     alignItems: 'center',
     marginVertical: 10,
   },
@@ -266,9 +324,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   recipesButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#1877F2',
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 15,
     alignItems: 'center',
     marginBottom: 10,
   },
@@ -295,6 +353,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6C6C6C',
     textAlign: 'center',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  calendarIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
   },
 });
 

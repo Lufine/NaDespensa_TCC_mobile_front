@@ -107,6 +107,11 @@ const RecipesScreen = ({ route, navigation }) => {
   if (showRecipes) {
     return (
       <View style={styles.container}>
+        <Image style={styles.design} source={require('../assets/desingtopright.png')} />
+        <TouchableOpacity onPress={() => setShowRecipes(false)}  style={styles.backContainer}>
+          <Image style={styles.back} source={require('../assets/back.png')} />
+          <Text style={styles.voltar}>Voltar</Text>
+        </TouchableOpacity>
         <ScrollView style={styles.scrollView}>
           {recipes.length > 0 ? (
             recipes.slice(0, visibleRecipes).map((recipe, index) => ( // Mostrar apenas o número de receitas visíveis
@@ -124,9 +129,6 @@ const RecipesScreen = ({ route, navigation }) => {
             <Text style={styles.loadMoreButtonText}>Gerar mais receitas</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity onPress={() => setShowRecipes(false)} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Voltar</Text>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -134,11 +136,13 @@ const RecipesScreen = ({ route, navigation }) => {
   if (products.length === 0) {
     return (
       <View style={styles.container}>
+        <Image style={styles.design} source={require('../assets/desingtopright.png')} />
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
           <Image style={styles.back} source={require('../assets/back.png')} />
           <Text style={styles.voltar}>Voltar</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Receitas</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
         <View style={styles.emptyContainer}>
           <Image source={require('../assets/imageRecipes.png')} style={styles.emptyImage} />
           <Text style={styles.emptyText}>Nenhum produto disponível</Text>
@@ -156,11 +160,13 @@ const RecipesScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Image style={styles.design} source={require('../assets/desingtopright.png')} />
       <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Receitas</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
       <View style={styles.optionContainer}>
         <Text style={styles.optionText}>Receitas exclusivas para ingredientes selecionados?</Text>
         <Switch
@@ -205,6 +211,13 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#FFF',
   },
+  design: {
+    width: 200,
+    height: 150,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   backContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -238,6 +251,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
+    fontWeight: 'bold',
     color: '#78746D',
     marginBottom: 10,
   },
@@ -320,6 +334,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginTop: 20,
+    fontWeight: 'bold',
   },
   loadMoreButton: {
     backgroundColor: '#3CB371',
@@ -345,6 +360,10 @@ const styles = StyleSheet.create({
   },
   optionContainer: {
     marginVertical: 10,
+    // borderWidth: 1,
+    // borderColor: '#BEBAB3',
+    // padding: 10,
+    // borderRadius: 15,
   },
   optionText: {
     fontSize: 16,

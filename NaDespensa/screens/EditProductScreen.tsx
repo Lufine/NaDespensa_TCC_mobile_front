@@ -69,7 +69,7 @@ const EditProductScreen = ({ route, navigation }) => {
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>
         <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-        <Text style={styles.title}>Editar Produto</Text>
+        <Text style={styles.title}>Editar produto</Text>
 
         <View style={styles.inputContainer}>
           <Image source={require('../assets/nameprod.png')} style={styles.icon} />
@@ -110,7 +110,7 @@ const EditProductScreen = ({ route, navigation }) => {
             <Text style={styles.saveButtonText}>Atualizar</Text>
           </TouchableOpacity>
         </View>
-        <Image style={styles.designunder} source={require('../assets/designunder.png')} />
+        {/* <Image style={styles.designunder} source={require('../assets/designunder.png')} /> */}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 20,
-    marginTop: '40%',
+    marginTop: '30%',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   saveButton: {
-    backgroundColor: '#3CB371',
+    backgroundColor: '#1877F2',
     borderRadius: 5,
     padding: 15,
     alignItems: 'center',
@@ -198,12 +198,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  designunder: {
-    width: '115%',
-    height: 200,
-    bottom: '-30%',
-    left: '-8%',
-  },
+  // designunder: {
+  //   width: '115%',
+  //   height: 200,
+  //   bottom: '-30%',
+  //   left: '-8%',
+  // },
 });
 
 export default EditProductScreen;

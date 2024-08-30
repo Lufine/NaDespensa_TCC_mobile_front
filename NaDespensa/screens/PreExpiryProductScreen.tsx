@@ -48,11 +48,11 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
       "Você tem certeza que deseja excluir este produto?",
       [
         {
-          text: "Cancelar",
+          text: "Não",
           style: "cancel"
         },
         {
-          text: "Excluir",
+          text: "Sim",
           onPress: async () => {
             try {
               const response = await axios.delete(`http://192.168.24.17:3000/products/${productId}`);
@@ -125,10 +125,13 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+        <Image style={styles.design} source={require('../assets/desingtopright.png')} />
       <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>
+      <Text style={styles.title}>Lista de produtos a vencer</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'space-around', marginVertical: 15, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
       <TextInput
         style={styles.searchInput}
         placeholder="Pesquise NaDespensa"
@@ -164,6 +167,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
   },
+  design: {
+    width: 200,
+    height: 150,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   backContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -178,6 +188,11 @@ const styles = StyleSheet.create({
   voltar: {
     color: '#3CB371',
     fontSize: 16,
+  },
+  title: {
+    color: '#3CB371',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   searchInput: {
     borderColor: '#A9E6AF',

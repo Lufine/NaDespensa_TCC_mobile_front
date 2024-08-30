@@ -73,7 +73,7 @@ const DashboardScreen = ({ route, navigation }) => {
           <TouchableOpacity onPress={() => handleNavigate('Config')}>
           <Image source={require('../assets/alarm.png')} style={styles.notifications}/>
           </TouchableOpacity>
-          <View style={{flexDirection: 'row', justifyContent: 'space-around', padding: 10, top: '10%', backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#3CB371',}}>{userData.notifications}</View>
+          <View style={{flexDirection: 'row', justifyContent: 'space-around', padding: 10, top: '10%', backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}>{userData.notifications}</View>
           <View style={styles.infoContainer}>
             <TouchableOpacity style={styles.infoBox} onPress={() => handleNavigate('ExpiryProductList')}>
               <Text style={styles.infoCount}>{expiredItemsCount}</Text>

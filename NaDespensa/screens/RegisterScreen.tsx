@@ -200,7 +200,7 @@ const RegisterScreen = ({ navigation }) => {
           {'\n'}• Senha deve ter no mínimo 8 caracteres;
           {'\n'}• Conter pelo menos 1 (um) número;
           {'\n'}• Conter pelo menos 1 (uma) letra maiúscula;
-          {'\n'}• Conter pelo menos 1 (uma) letra minúscula;
+          {'\n'}• Conter pelo menos 1 (uma) letra minúscula.
         </Text>
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Cadastrar</Text>

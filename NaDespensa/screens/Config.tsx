@@ -104,14 +104,15 @@ const SettingsScreen = ({ route, navigation }) => {
       <Image style={styles.image} source={require('../assets/imageconfig.png')} />
 
 
-        <View style={styles.section}>
+        <View style={styles.sectionnotification}>
+          <Image style={styles.iconnotification} source={require('../assets/notificationconfig.png')} />
           <Text style={styles.sectionTitle}>Notificações</Text>
           <Switch
             trackColor={{ false: "#767577", true: "#3CB371" }}
             thumbColor={isEnabled ? "#ffffff" : "#f4f3f4"}
             onValueChange={toggleSwitch}
             value={isEnabled}
-              style={{alignSelf: 'flex-start',}}
+              style={{alignSelf: 'flex-end',}}
           />
         </View>
 
@@ -121,7 +122,7 @@ const SettingsScreen = ({ route, navigation }) => {
           <Text style={styles.sectionHeader}>Informações da conta</Text>
 
           <TouchableOpacity style={styles.infoItem} onPress={() => handleNavigate('SetNewName')}>
-            <Image style={styles.icon} source={require('../assets/user.png')} />
+            <Image style={styles.icon} source={require('../assets/profileconfig.png')} />
             <View style={styles.infoTextContainer}>
               <Text style={styles.infoTitle}>Nome</Text>
               <Text style={styles.infoValue}>{userData.nome}</Text>
@@ -129,7 +130,7 @@ const SettingsScreen = ({ route, navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.infoItem} onPress={() => handleNavigate('SetNewEmail')}>
-            <Image style={styles.icon} source={require('../assets/email.png')} />
+            <Image style={styles.icon} source={require('../assets/emailconfig.png')} />
             <View style={styles.infoTextContainer}>
               <Text style={styles.infoTitle}>Email</Text>
               <Text style={styles.infoValue}>{userData.email}</Text>
@@ -137,7 +138,7 @@ const SettingsScreen = ({ route, navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.infoItem}  onPress={() => handleNavigate('SetNewPhone')}>
-            <Image style={styles.icon} source={require('../assets/phone.png')} />
+            <Image style={styles.icon} source={require('../assets/phoneconfig.png')} />
             <View style={styles.infoTextContainer}>
               <Text style={styles.infoTitle}>Telefone</Text>
               <Text style={styles.infoValue}>{userData.telefone}</Text>
@@ -145,7 +146,7 @@ const SettingsScreen = ({ route, navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.infoItem} onPress={() => handleNavigate('SetNewPassword')}>
-            <Image style={styles.icon} source={require('../assets/cadeado.png')} />
+            <Image style={styles.icon} source={require('../assets/passwordconfig.png')} />
             <View style={styles.infoTextContainer}>
               <Text style={styles.infoTitle}>Senha</Text>
               <Text style={styles.infoValue}>Alterar Senha</Text>
@@ -205,14 +206,28 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 20,
   },
+  sectionnotification:{
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    borderWidth: 1,
+    borderColor: '#BEBAB3',
+    padding: 10,
+    borderRadius: 15,
+  },
+  iconnotification:{
+    width: 30,
+    height: 30,
+  },
   section: {
     marginVertical: 10,
   },
   sectionTitle: {
     fontSize: 18,
+    alignItems: 'flex-start',
     fontWeight: 'bold',
     color: '#3CB371',
-    marginBottom: 10,
+    margin: 'auto',
+    marginLeft: 10,
   },
   sectionHeader: {
     fontSize: 16,
