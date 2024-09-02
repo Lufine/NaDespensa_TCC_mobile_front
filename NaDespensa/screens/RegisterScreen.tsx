@@ -44,6 +44,35 @@ const RegisterScreen = ({ navigation }) => {
     return regex.test(telefone);
   };
 
+  const formatDate = (text) => {
+    // Remove tudo que não for número
+    let cleaned = text.replace(/\D/g, '');
+    
+    // Se o usuário está deletando (string vazia ou com menos de 2 caracteres), apenas retorna o texto limpo
+    if (cleaned.length === 0) return '';
+    if (cleaned.length <= 2) return cleaned;
+    
+    // Adiciona barras (/) automaticamente conforme o usuário digita
+    if (cleaned.length <= 4) return cleaned.slice(0, 2) + '/' + cleaned.slice(2);
+    return cleaned.slice(0, 2) + '/' + cleaned.slice(2, 4) + '/' + cleaned.slice(4, 8);
+  };
+
+  const formatPhone = (text) => {
+    // Remove tudo que não for número
+    let cleaned = text.replace(/\D/g, '');
+  
+    // Se o usuário está deletando (string vazia ou com menos de 2 caracteres), apenas retorna o texto limpo
+    if (cleaned.length === 0) return '';
+    if (cleaned.length <= 2) return `(${cleaned}`;
+  
+    // Adiciona parênteses e hífen automaticamente conforme o usuário digita
+    if (cleaned.length <= 6) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+    if (cleaned.length <= 10) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+  
+    // Limite o número de caracteres ao padrão de telefone
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
+  };
+
   // Função de validação de data de nascimento
   const isValidDateOfBirth = (date) => {
     const regex = /^\d{2}[-/]\d{2}[-/]\d{4}$/; // Formato esperado DD-MM-AAAA ou DD/MM/AAAA
@@ -155,6 +184,7 @@ const RegisterScreen = ({ navigation }) => {
             value={email}
             onChangeText={setEmail}
             style={styles.input}
+            keyboardType="email-address"
           />
           <Image style={styles.icon} source={require('../assets/email.png')} />
         </View>
@@ -162,7 +192,8 @@ const RegisterScreen = ({ navigation }) => {
           <TextInput
             placeholder="Data de nascimento"
             value={dataNascimento}
-            onChangeText={setDataNascimento}
+            onChangeText={(text) => setDataNascimento(formatDate(text))}
+            keyboardType="number-pad"
             style={styles.input}
           />
           <Image style={styles.icon} source={require('../assets/calendar.png')} />
@@ -171,7 +202,8 @@ const RegisterScreen = ({ navigation }) => {
           <TextInput
             placeholder="Telefone"
             value={telefone}
-            onChangeText={setTelefone}
+            onChangeText={(text) => setTelefone(formatPhone(text))}
+            keyboardType="number-pad"
             style={styles.input}
           />
           <Image style={styles.icon} source={require('../assets/phone.png')} />

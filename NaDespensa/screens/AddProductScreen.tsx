@@ -182,6 +182,7 @@ const AddProductScreen = ({ route, navigation }) => {
             <TextInput
               placeholder="Código de Barras"
               value={barcodeInput}
+              keyboardType="number-pad"
               onChangeText={(text) => {
                 setBarcodeInput(text);
                 if (text.length === 13) {
@@ -219,7 +220,7 @@ const AddProductScreen = ({ route, navigation }) => {
               value={quantity}
               onChangeText={setQuantity}
               style={styles.input}
-              keyboardType="numeric"
+              keyboardType="number-pad"
             />
           </View>
           <View style={styles.inputContainer}>
@@ -228,7 +229,7 @@ const AddProductScreen = ({ route, navigation }) => {
               placeholder="Data de Validade (DD/MM/YYYY)"
               value={expiryDate}
               onChangeText={(text) => setExpiryDate(formatDate(text))}
-              keyboardType="numeric"
+              keyboardType="number-pad"
               style={styles.input}
             />
           </View>

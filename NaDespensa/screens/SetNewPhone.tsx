@@ -22,6 +22,22 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
       });
     }, [navigation]);
 
+    const formatPhone = (text) => {
+      // Remove tudo que não for número
+      let cleaned = text.replace(/\D/g, '');
+    
+      // Se o usuário está deletando (string vazia ou com menos de 2 caracteres), apenas retorna o texto limpo
+      if (cleaned.length === 0) return '';
+      if (cleaned.length <= 2) return `(${cleaned}`;
+    
+      // Adiciona parênteses e hífen automaticamente conforme o usuário digita
+      if (cleaned.length <= 6) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+      if (cleaned.length <= 10) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    
+      // Limite o número de caracteres ao padrão de telefone
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
+    };
+
     const handleChangePhoneNumber = async () => {
       if (!currentPassword || !newPhoneNumber || !confirmPhoneNumber) {
         Alert.alert('Erro', 'Todos os campos são obrigatórios');
@@ -91,10 +107,9 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
             <TextInput
               placeholder="Novo número de telefone"
               value={newPhoneNumber}
-              onChangeText={setNewPhoneNumber}
+              onChangeText={(text) => setNewPhoneNumber(formatPhone(text))}
               style={styles.input}
               keyboardType="phone-pad"
-              maxLength={11} // Limitar o comprimento do input
             />
             <Image style={styles.icon} source={require('../assets/phone.png')} />
           </View>
@@ -103,10 +118,9 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
             <TextInput
               placeholder="Confirmar novo número de telefone"
               value={confirmPhoneNumber}
-              onChangeText={setConfirmPhoneNumber}
+              onChangeText={(text) => setConfirmPhoneNumber(formatPhone(text))}
               style={styles.input}
               keyboardType="phone-pad"
-              maxLength={11} // Limitar o comprimento do input
             />
             <Image style={styles.icon} source={require('../assets/phone.png')} />
           </View>

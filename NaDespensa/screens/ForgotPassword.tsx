@@ -60,6 +60,7 @@ const ForgotPassword = ({ navigation }) => {
                         value={email}
                         onChangeText={setEmail}
                         style={styles.input}
+                        keyboardType="email-address"
                     />
                     <Image style={styles.icon} source={require('../assets/email.png')} />
                 </View>
