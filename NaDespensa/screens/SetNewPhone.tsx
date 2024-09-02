@@ -109,7 +109,7 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
               value={newPhoneNumber}
               onChangeText={(text) => setNewPhoneNumber(formatPhone(text))}
               style={styles.input}
-              keyboardType="phone-pad"
+              keyboardType="number-pad"
             />
             <Image style={styles.icon} source={require('../assets/phone.png')} />
           </View>
@@ -120,7 +120,7 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
               value={confirmPhoneNumber}
               onChangeText={(text) => setConfirmPhoneNumber(formatPhone(text))}
               style={styles.input}
-              keyboardType="phone-pad"
+              keyboardType="number-pad"
             />
             <Image style={styles.icon} source={require('../assets/phone.png')} />
           </View>
