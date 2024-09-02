@@ -62,7 +62,8 @@ const SettingsScreen = ({ route, navigation }) => {
                 console.log('Habilitando notificações...');
                 await notificationService.configure();
                 await notificationService.checkAndSendNotifications(); // Enviar notificações sobre produtos próximos ao vencimento
-                await notificationService.scheduleTestNotification(); // Enviar notificação de teste
+                await notificationService.scheduleImmediateNotification(); // Enviar notificação de teste
+                await notificationService.scheduleRandomNotifications();
               } else {
                 console.log('Desabilitando notificações...');
                 await notificationService.cancelAllNotifications(); // Cancelar todas as notificações
@@ -103,7 +104,7 @@ const SettingsScreen = ({ route, navigation }) => {
 
       <Image style={styles.image} source={require('../assets/imageconfig.png')} />
 
-
+      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContentContainer}>
         <View style={styles.sectionnotification}>
           <Image style={styles.iconnotification} source={require('../assets/notificationconfig.png')} />
           <Text style={styles.sectionTitle}>Notificações</Text>
@@ -116,8 +117,6 @@ const SettingsScreen = ({ route, navigation }) => {
           />
         </View>
 
-        <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContentContainer}>
-          
         <View style={styles.section}>
           <Text style={styles.sectionHeader}>Informações da conta</Text>
 
@@ -215,6 +214,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   iconnotification:{
+    margin: 'auto',
+    right: 40,
     width: 30,
     height: 30,
   },
@@ -227,6 +228,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#3CB371',
     margin: 'auto',
+    right: 80,
     marginLeft: 10,
   },
   sectionHeader: {

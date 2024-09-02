@@ -16,94 +16,174 @@ class NotificationService {
       return false;
     }
 
-    console.log('Notification permissions granted.');
+    console.log('Notificações foram permitidas.');
     return true;
+  };
+
+  scheduleImmediateNotification = async () => {
+    try {
+      const notificationId = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Notificação Ativada",
+          body: "As notificações foram ativadas com sucesso!",
+        },
+        trigger: {
+          seconds: 1, // Notificação imediata
+        },
+      });
+
+      console.log(`Notificação imediata agendada. ID: ${notificationId}`);
+    } catch (error) {
+      console.error('Erro ao agendar notificação imediata:', error);
+    }
   };
 
   checkAndSendNotifications = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
       if (userId) {
+        console.log('Notificação sobre produtos a vencer do usuário:', userId);
         const response = await axios.get(`http://192.168.24.17:3000/pre-expiry-products/${userId}`);
         const products = response.data;
 
-        products.forEach(async (product) => {
+        const expiringProducts = products.filter(product => {
           const expiryDate = new Date(product.expiry_date);
           const currentDate = new Date();
           const daysLeft = Math.ceil((expiryDate - currentDate) / (1000 * 60 * 60 * 24));
-
-          if (daysLeft <= 5) {
-            console.log(`Notifying about ${product.name} expiring in ${daysLeft} days.`);
-            await Notifications.scheduleNotificationAsync({
-              content: {
-                title: "Produto Próximo do Vencimento",
-                body: `${product.name} está vencendo em ${daysLeft} dias!`,
-              },
-              trigger: {
-                seconds: 1, // Notificação imediata para teste
-              },
-            });
-          }
+          return daysLeft <= 5;
         });
 
-        // Agendar notificação a cada 12 horas
-        await this.scheduleNotificationsEvery12Hours();
+        if (expiringProducts.length > 0) {
+          console.log('Notificação sobre produtos próximos ao vencimento.');
+          try {
+            // Agendar notificações aleatórias para produtos próximos ao vencimento
+            await this.scheduleExpiringProductsNotifications();
+          } catch (notificationError) {
+            console.error('Erro ao agendar notificações aleatórias de produtos próximos ao vencimento:', notificationError);
+          }
+        }
       }
     } catch (error) {
       console.error('Erro ao buscar produtos próximos ao vencimento:', error);
     }
   };
 
-  scheduleNotificationsEvery12Hours = async () => {
+  // Função para agendar notificações em horários aleatórios dentro de intervalos específicos
+  scheduleRandomNotifications = async () => {
     try {
-      await Notifications.cancelAllScheduledNotificationsAsync(); // Cancelar notificações agendadas anteriormente
+      const intervals = [
+        { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 },     // Café da manhã
+        { startHour: 11, startMinute: 30, endHour: 12, endMinute: 30 }, // Almoço
+        { startHour: 18, startMinute: 0, endHour: 19, endMinute: 0 }    // Janta
+      ];
 
-      const randomMinutes = Math.floor(Math.random() * 720); // Aleatório entre 0 e 720 minutos (12 horas)
-      const triggerTime = new Date();
-      triggerTime.setMinutes(triggerTime.getMinutes() + randomMinutes);
+      for (const interval of intervals) {
+        const randomTime = this.getRandomTime(interval.startHour, interval.startMinute, interval.endHour, interval.endMinute);
 
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Itens na Despensa",
-          body: "Verifique os itens na sua despensa. Use nossa sugestão de receitas!",
-        },
-        trigger: {
-          hour: triggerTime.getHours(),
-          minute: triggerTime.getMinutes(),
-          repeats: true,
-        },
-      });
-      console.log('Notification scheduled every 12 hours with random time.');
+        // Formatar o horário e minuto com dois dígitos
+        const formattedHour = String(randomTime.hour).padStart(2, '0');
+        const formattedMinute = String(randomTime.minute).padStart(2, '0');
+
+        console.log(`Notificações aleatórias serão enviadas ${formattedHour}:${formattedMinute}`);
+        
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Itens na Despensa",
+            body: "Verifique os itens na sua despensa. Use nossa sugestão de receitas!",
+          },
+          trigger: {
+            hour: randomTime.hour,
+            minute: randomTime.minute,
+            repeats: true,
+          },
+        });
+      }
+
+      console.log('Notificações aleatórias agendadas dentro dos intervalos específicos.');
     } catch (error) {
-      console.error('Erro ao agendar notificações de 12 horas:', error);
+      console.error('Erro ao agendar notificações aleatórias:', error);
     }
   };
 
-  scheduleTestNotification = async () => {
+  // Função para agendar notificações aleatórias para produtos próximos ao vencimento
+  scheduleExpiringProductsNotifications = async () => {
     try {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Teste de Notificação",
-          body: "Esta é uma notificação de teste para verificar o envio.",
-        },
-        trigger: { seconds: 5 }, // Notificação imediata para teste
-      });
-      console.log('Test notification scheduled.');
+      const intervals = [
+        { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 },     // Café da manhã
+        { startHour: 11, startMinute: 30, endHour: 12, endMinute: 30 }, // Almoço
+        { startHour: 18, startMinute: 0, endHour: 19, endMinute: 0 }    // Janta
+      ];
+
+      for (const interval of intervals) {
+        const randomTime = this.getRandomTime(interval.startHour, interval.startMinute, interval.endHour, interval.endMinute);
+
+        // Formatar o horário e minuto com dois dígitos
+        const formattedHour = String(randomTime.hour).padStart(2, '0');
+        const formattedMinute = String(randomTime.minute).padStart(2, '0');
+
+        console.log(`Notificações sobre produtos próximos ao vencimento serão enviadas ${formattedHour}:${formattedMinute}`);
+        
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Produto Próximo do Vencimento",
+            body: "Você tem produtos próximos do vencimento. Verifique sua despensa!",
+          },
+          trigger: {
+            hour: randomTime.hour,
+            minute: randomTime.minute,
+            repeats: true,
+          },
+        });
+      }
+
+      console.log('Notificações sobre produtos próximos ao vencimento agendadas dentro dos intervalos específicos.');
     } catch (error) {
-      console.error('Erro ao agendar notificação de teste:', error);
+      console.error('Erro ao agendar notificações sobre produtos próximos ao vencimento:', error);
     }
+  };
+
+  // Função para gerar um horário aleatório dentro de um intervalo específico
+  getRandomTime = (startHour, startMinute, endHour, endMinute) => {
+    const start = new Date();
+    start.setHours(startHour, startMinute, 0, 0);
+
+    const end = new Date();
+    end.setHours(endHour, endMinute, 0, 0);
+
+    const randomTime = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+
+    return {
+      hour: randomTime.getHours(),
+      minute: randomTime.getMinutes()
+    };
   };
 
   // Função para cancelar todas as notificações
   cancelAllNotifications = async () => {
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
-      console.log('All notifications have been canceled.');
+      console.log('Todas as notificações foram canceladas.');
     } catch (error) {
       console.error('Erro ao cancelar notificações:', error);
     }
   };
 }
+
+  // scheduleTestNotification = async () => {
+  //   try {
+  //     const notificationId = await Notifications.scheduleNotificationAsync({
+  //       content: {
+  //         title: "Teste de Notificação",
+  //         body: "Esta é uma notificação de teste para verificar o envio.",
+  //       },
+  //       trigger: { seconds: 5 }, // Notificação imediata para teste
+  //     });
+  //     console.log('Test notification scheduled.');
+  //     console.log(`Test notification ID: ${notificationId}`);
+  //   } catch (error) {
+  //     console.error('Erro ao agendar notificação de teste:', error);
+  //   }
+  // };
 
 const notificationService = new NotificationService();
 export default notificationService;

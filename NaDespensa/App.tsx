@@ -15,21 +15,22 @@ Notifications.setNotificationHandler({
 const App: React.FC = () => {
   useEffect(() => {
     const configureNotifications = async () => {
-      // Verificar se o usuário está autenticado
-      const userId = await AsyncStorage.getItem('userId');
+      try {
+        // Verificar se o usuário está autenticado
+        const userId = await AsyncStorage.getItem('userId');
+        // Verificar se as notificações estão habilitadas
+        const notificationsEnabled = await AsyncStorage.getItem('notificationsEnabled');
 
-      // Verificar se as notificações estão habilitadas
-      const notificationsEnabled = await AsyncStorage.getItem('notificationsEnabled');
+        if (userId && JSON.parse(notificationsEnabled)) {
+          const isConfigured = await notificationService.configure();
+          if (isConfigured) {
+            await notificationService.checkAndSendNotifications();
 
-      if (userId && JSON.parse(notificationsEnabled)) {
-        const isConfigured = await notificationService.configure();
-        if (isConfigured) {
-          console.log('Checking and sending immediate notifications.');
-          await notificationService.checkAndSendNotifications();
-
-          console.log('Scheduling notifications every 12 hours.');
-          await notificationService.scheduleNotificationsEvery12Hours();
+            await notificationService.scheduleRandomNotifications(); // Agendar notificações em horários aleatórios
+          }
         }
+      } catch (error) {
+        console.error('Erro ao configurar notificações:', error);
       }
     };
 

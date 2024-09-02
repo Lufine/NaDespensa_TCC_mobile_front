@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Image, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Image, TextInput, TouchableWithoutFeedback, Keyboard  } from 'react-native';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { useFocusEffect } from '@react-navigation/native';
@@ -88,6 +88,32 @@ const ExpiryProductListScreen = ({ route, navigation }) => {
     }
   };
 
+  const getExpiryText = (expiryDate) => {
+    const today = dayjs();
+    const expiry = dayjs(expiryDate);
+    const diffDays = expiry.diff(today, 'day');
+  
+    if (diffDays < 0) {
+      return `Vencido há ${Math.abs(diffDays)} dias`;
+    } else {
+      return `Vencimento em ${diffDays} dias`;
+    }
+  };
+
+  const getCalendarIcon = (expiryDate) => {
+    const today = dayjs();
+    const expiry = dayjs(expiryDate);
+    const diffDays = expiry.diff(today, 'day');
+  
+    if (diffDays < 0) {
+      return require('../assets/calendarred.png');
+    } else if (diffDays <= 5) {
+      return require('../assets/calendaryellow.png');
+    } else {
+      return require('../assets/calendargreen.png');
+    }
+  };
+
   const handleSearch = (text) => {
     setSearchText(text);
     if (text === '') {
@@ -109,8 +135,12 @@ const ExpiryProductListScreen = ({ route, navigation }) => {
       />
       <View style={styles.productDetails}>
         <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productDate}>Quantidade: {item.quantity}</Text>
         <Text style={styles.productDate}>Data de validade: {dayjs(item.expiry_date).format('DD/MM/YYYY')}</Text>
-        <Text style={getItemStyle(item.expiry_date)}>Vencimento em {dayjs(item.expiry_date).diff(dayjs(), 'day')} dias</Text>
+        <View style={styles.dateRow}>
+          <Image style={styles.calendarIcon} source={getCalendarIcon(item.expiry_date)} />
+          <Text style={getItemStyle(item.expiry_date)}>{getExpiryText(item.expiry_date)}</Text>
+        </View>
         <View style={styles.actionButtons}>
           <TouchableOpacity onPress={() => handleEditProduct(item)} style={styles.editButton}>
             <Text style={styles.editButtonText}>Editar</Text>
@@ -132,12 +162,19 @@ const ExpiryProductListScreen = ({ route, navigation }) => {
       </TouchableOpacity>
       <Text style={styles.title}>Lista de produtos vencidos</Text>
       <View style={{flexDirection: 'row', justifyContent: 'space-around', marginVertical: 15, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Pesquise NaDespensa"
-        value={searchText}
-        onChangeText={handleSearch}
-      />
+      {filteredProducts.length > 0 && (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} keyboardShouldPersistTaps='handled'>
+      <View style={styles.search}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Pesquise NaDespensa"
+          value={searchText}
+          onChangeText={handleSearch}
+        />
+        <Image style={styles.searchIcon} source={require('../assets/search.png')} />
+      </View>
+      </TouchableWithoutFeedback>
+      )}
       {filteredProducts.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Image source={require('../assets/imageAddproduct.png')} style={styles.emptyImage} />
@@ -194,13 +231,23 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  searchInput: {
+  search:{
+    flexDirection: 'row',
     borderColor: '#A9E6AF',
     borderWidth: 2,
     borderRadius: 10,
     marginBottom: 10,
+  },
+  searchInput: {
     padding: 10,
+    width: '100%',
     fontSize: 16,
+  },
+  searchIcon:{
+    margin: 'auto',
+    right: '60%',
+    width: 25,
+    height: 20,
   },
   productItem: {
     flexDirection: 'row',
@@ -270,9 +317,9 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   addButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#3CB371',
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 15,
     alignItems: 'center',
     marginVertical: 10,
   },
@@ -281,9 +328,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   recipesButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#1877F2',
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 15,
     alignItems: 'center',
     marginBottom: 10,
   },
@@ -310,6 +357,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6C6C6C',
     textAlign: 'center',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  calendarIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
   },
 });
 

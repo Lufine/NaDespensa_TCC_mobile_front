@@ -204,11 +204,11 @@ const styles = StyleSheet.create({
     //     right: 10,
     // },
     search: {
-        width: 17,
-        height: 19,
+        width: 25,
+        height: 20,
         top: '-92.5%',
         alignSelf: 'flex-start',
-        left: 10,
+        left: 5,
     },
     add: {
         width: 20,

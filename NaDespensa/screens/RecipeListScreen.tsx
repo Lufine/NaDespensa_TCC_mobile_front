@@ -252,12 +252,11 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#78746D',
     marginBottom: 10,
   },
   suggestionText: {
     fontSize: 16,
-    color: '#78746D',
+    color: '#6C6C6C',
   },
   addButton: {
     backgroundColor: '#3CB371',
