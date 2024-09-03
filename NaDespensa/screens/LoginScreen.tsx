@@ -18,18 +18,23 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.24.17:3000/login', { emailOrUsername, senha });
+      // Remover espaços extras no começo e no final do input
+      const sanitizedEmailOrUsername = emailOrUsername.trim();
+      const sanitizedSenha = senha.trim();
+  
+      const response = await axios.post('http://192.168.24.17:3000/login', { emailOrUsername: sanitizedEmailOrUsername, senha: sanitizedSenha });
+      
       if (response.data.success) {
         // Armazenar o userId
         await AsyncStorage.setItem('userId', response.data.userId.toString());
-
+  
         // Verificar se as notificações estão habilitadas
         const notificationsEnabled = await AsyncStorage.getItem('notificationsEnabled');
         if (notificationsEnabled === 'true') {
           // Iniciar o serviço de notificações
           await notificationService.checkAndSendNotifications(response.data.userId);
         }
-
+  
         navigation.navigate('Dashboard', { userId: response.data.userId });
       } else {
         alert('Credenciais inválidas');
@@ -38,6 +43,7 @@ const LoginScreen = ({ navigation }) => {
       console.error(error);
     }
   };
+  
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);

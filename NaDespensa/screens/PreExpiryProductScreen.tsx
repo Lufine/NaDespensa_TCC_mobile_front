@@ -9,6 +9,7 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
   const [products, setProducts] = useState(route.params.products || []);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -26,6 +27,17 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
     navigation.setOptions({
       headerShown: false,
     });
+    
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
   }, []);
 
   useFocusEffect(
@@ -142,11 +154,17 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
           <Text style={getItemStyle(item.expiry_date)}>{getExpiryText(item.expiry_date)}</Text>
         </View>
         <View style={styles.actionButtons}>
-          <TouchableOpacity onPress={() => handleEditProduct(item)} style={styles.editButton}>
-            <Text style={styles.editButtonText}>Editar</Text>
+        <TouchableOpacity onPress={() => handleEditProduct(item)} style={styles.editar}>
+            <Image style={styles.edit} source={require('../assets/edit.png')} />
+            <View style={styles.editButton}>
+              <Text style={styles.editButtonText}>Editar</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deleteButton}>
-            <Text style={styles.deleteButtonText}>Excluir</Text>
+          <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deletar}>
+            <Image style={styles.delete} source={require('../assets/excluir.png')} />
+            <View style={styles.deleteButton}>
+              <Text style={styles.deleteButtonText}>Excluir</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -154,6 +172,7 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
   );
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={styles.container}>
         <Image style={styles.design} source={require('../assets/desingtopright.png')} />
       <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
@@ -162,32 +181,29 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
       </TouchableOpacity>
       <Text style={styles.title}>Lista de produtos a vencer</Text>
       <View style={{flexDirection: 'row', justifyContent: 'space-around', marginVertical: 15, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
-      {filteredProducts.length > 0 && (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} keyboardShouldPersistTaps='handled'>
-      <View style={styles.search}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Pesquise NaDespensa"
-          value={searchText}
-          onChangeText={handleSearch}
-        />
-        <Image style={styles.searchIcon} source={require('../assets/search.png')} />
-      </View>
-      </TouchableWithoutFeedback>
-      )}
-      {filteredProducts.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Image source={require('../assets/imageAddproduct.png')} style={styles.emptyImage} />
-          <Text style={styles.emptyText}>Nenhum alimento encontrado</Text>
-          <Text style={styles.suggestionText}>Você não possui nenhum alimento perto do vencimento!</Text>
+        <View style={styles.search}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Pesquise NaDespensa"
+            value={searchText}
+            onChangeText={handleSearch}
+          />
+          <Image style={styles.searchIcon} source={require('../assets/search.png')} />
         </View>
-      ) : (
-        <FlatList
-          data={filteredProducts}
-          keyExtractor={(item) => item.product_id ? item.product_id.toString() : Math.random().toString()}
-          renderItem={renderItem}
-        />
-      )}
+        {filteredProducts.length === 0 && !isKeyboardVisible ? (
+            <View style={styles.emptyContainer}>
+              <Image source={require('../assets/imageAddproduct.png')} style={styles.emptyImage} />
+              <Text style={styles.emptyText}>Alimento não encontrado</Text>
+              <Text style={styles.suggestionText}>Tente pesquisar o alimento com uma palavra-chave diferente</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={filteredProducts}
+              keyExtractor={(item) => item.product_id ? item.product_id.toString() : Math.random().toString()}
+              renderItem={renderItem}
+              keyboardShouldPersistTaps='handled'
+            />
+          )}
       <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddProduct', { userId })}>
         <Text style={styles.addButtonText}>Adicionar</Text>
       </TouchableOpacity>
@@ -195,6 +211,7 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
         <Text style={styles.recipesButtonText}>Ver receitas</Text>
       </TouchableOpacity>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -297,24 +314,42 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 10,
   },
+  editar:{
+    flexDirection: 'row',
+  },
+  edit:{
+    top: '3%',
+    left: 5,
+    width: 20,
+    height: 20,
+  },
   editButton: {
-    backgroundColor: '#007BFF',
+    // backgroundColor: '#007BFF',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
     marginRight: 10,
   },
   editButtonText: {
-    color: '#fff',
+    color: '#007BFF',
+  },
+  deletar:{
+    flexDirection: 'row',
+  },
+  delete:{
+    top: '3%',
+    left: 5,
+    width: 20,
+    height: 20,
   },
   deleteButton: {
-    backgroundColor: '#FF4C4C',
+    // backgroundColor: '#FF4C4C',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
   },
   deleteButtonText: {
-    color: '#fff',
+    color: '#FF4C4C',
   },
   addButton: {
     backgroundColor: '#3CB371',

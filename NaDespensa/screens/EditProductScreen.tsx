@@ -17,6 +17,19 @@ const EditProductScreen = ({ route, navigation }) => {
     });
   }, [navigation]);
 
+  const formatDate = (text) => {
+    // Remove tudo que não for número
+    let cleaned = text.replace(/\D/g, '');
+    
+    // Se o usuário está deletando (string vazia ou com menos de 2 caracteres), apenas retorna o texto limpo
+    if (cleaned.length === 0) return '';
+    if (cleaned.length <= 2) return cleaned;
+    
+    // Adiciona barras (/) automaticamente conforme o usuário digita
+    if (cleaned.length <= 4) return cleaned.slice(0, 2) + '/' + cleaned.slice(2);
+    return cleaned.slice(0, 2) + '/' + cleaned.slice(2, 4) + '/' + cleaned.slice(4, 8);
+  };
+
   const validateDate = (date) => {
     const parsedDate1 = parse(date, 'dd/MM/yyyy', new Date());
     const parsedDate2 = parse(date, 'dd-MM-yyyy', new Date());
@@ -97,8 +110,9 @@ const EditProductScreen = ({ route, navigation }) => {
           <TextInput
             placeholder="Data de Validade (DD/MM/YYYY)"
             value={expiryDate}
-            onChangeText={setExpiryDate}
+            onChangeText={(text) => setExpiryDate(formatDate(text))}
             style={styles.input}
+            keyboardType="number-pad"
           />
         </View>
 

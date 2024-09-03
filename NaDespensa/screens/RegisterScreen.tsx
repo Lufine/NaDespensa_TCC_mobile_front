@@ -38,12 +38,6 @@ const RegisterScreen = ({ navigation }) => {
     return re.test(String(email).toLowerCase());
   };
 
-  // Função de validação de telefone no formato (XX) XXXXX-XXXX
-  const isValidPhoneNumber = (telefone) => {
-    const regex = /^\d{11}$/;
-    return regex.test(telefone);
-  };
-
   const formatDate = (text) => {
     // Remove tudo que não for número
     let cleaned = text.replace(/\D/g, '');
@@ -110,7 +104,7 @@ const RegisterScreen = ({ navigation }) => {
       return;
     }
 
-    if (!isValidPhoneNumber(telefone)) {
+    if (!formatPhone(telefone)) {
       Alert.alert('Erro', 'O telefone deve estar no formato (XX) XXXXX-XXXX');
       return;
     }

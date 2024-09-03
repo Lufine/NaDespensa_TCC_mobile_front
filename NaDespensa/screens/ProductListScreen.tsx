@@ -9,6 +9,7 @@ const ProductListScreen = ({ route, navigation }) => {
   const [products, setProducts] = useState(route.params.products || []);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -26,6 +27,17 @@ const ProductListScreen = ({ route, navigation }) => {
     navigation.setOptions({
       headerShown: false,
     });
+    
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
   }, []);
 
   useFocusEffect(
@@ -158,50 +170,48 @@ const ProductListScreen = ({ route, navigation }) => {
       </View>
     </View>
   );
-  
 
   return (
-    <View style={styles.container}>
-      <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-      <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
-        <Image style={styles.back} source={require('../assets/back.png')} />
-        <Text style={styles.voltar}>Voltar</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>Lista de produtos</Text>
-      <View style={{flexDirection: 'row', justifyContent: 'space-around', marginVertical: 15, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
-      {filteredProducts.length > 0 && (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} keyboardShouldPersistTaps='handled'>
-      <View style={styles.search}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Pesquise NaDespensa"
-          value={searchText}
-          onChangeText={handleSearch}
-        />
-        <Image style={styles.searchIcon} source={require('../assets/search.png')} />
-      </View>
-      </TouchableWithoutFeedback>
-      )}
-      {filteredProducts.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Image source={require('../assets/imageAddproduct.png')} style={styles.emptyImage} />
-          <Text style={styles.emptyText}>Alimento não encontrado</Text>
-          <Text style={styles.suggestionText}>Tente pesquisar o alimento com uma palavra-chave diferente</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Image style={styles.design} source={require('../assets/desingtopright.png')} />
+        <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
+          <Image style={styles.back} source={require('../assets/back.png')} />
+          <Text style={styles.voltar}>Voltar</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Lista de produtos</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', marginVertical: 15, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
+        <View style={styles.search}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Pesquise NaDespensa"
+            value={searchText}
+            onChangeText={handleSearch}
+          />
+          <Image style={styles.searchIcon} source={require('../assets/search.png')} />
         </View>
-      ) : (
-        <FlatList
-          data={filteredProducts}
-          keyExtractor={(item) => item.product_id ? item.product_id.toString() : Math.random().toString()}
-          renderItem={renderItem}
-        />
-      )}
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddProduct', { userId })}>
-        <Text style={styles.addButtonText}>Adicionar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.recipesButton} onPress={() => navigation.navigate('Recipes', { userId })}>
-        <Text style={styles.recipesButtonText}>Ver receitas</Text>
-      </TouchableOpacity>
-    </View>
+        {filteredProducts.length === 0 && !isKeyboardVisible ? (
+            <View style={styles.emptyContainer}>
+              <Image source={require('../assets/imageAddproduct.png')} style={styles.emptyImage} />
+              <Text style={styles.emptyText}>Alimento não encontrado</Text>
+              <Text style={styles.suggestionText}>Tente pesquisar o alimento com uma palavra-chave diferente</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={filteredProducts}
+              keyExtractor={(item) => item.product_id ? item.product_id.toString() : Math.random().toString()}
+              renderItem={renderItem}
+              keyboardShouldPersistTaps='handled'
+            />
+          )}
+        <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddProduct', { userId })}>
+          <Text style={styles.addButtonText}>Adicionar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.recipesButton} onPress={() => navigation.navigate('Recipes', { userId })}>
+          <Text style={styles.recipesButtonText}>Ver receitas</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

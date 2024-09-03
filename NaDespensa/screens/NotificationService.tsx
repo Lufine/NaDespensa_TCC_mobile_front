@@ -13,6 +13,7 @@ class NotificationService {
     }
 
     if (finalStatus !== 'granted') {
+      console.log('Permissão de notificações não concedida.');
       return false;
     }
 
@@ -40,37 +41,54 @@ class NotificationService {
 
   checkAndSendNotifications = async () => {
     try {
+      const lastNotificationDate = await AsyncStorage.getItem('lastNotificationDate');
+      const currentDate = new Date().toISOString().split('T')[0];
       const userId = await AsyncStorage.getItem('userId');
-      if (userId) {
-        console.log('Notificação sobre produtos a vencer do usuário:', userId);
-        const response = await axios.get(`http://192.168.24.17:3000/pre-expiry-products/${userId}`);
-        const products = response.data;
-
-        const expiringProducts = products.filter(product => {
-          const expiryDate = new Date(product.expiry_date);
-          const currentDate = new Date();
-          const daysLeft = Math.ceil((expiryDate - currentDate) / (1000 * 60 * 60 * 24));
-          return daysLeft <= 5;
-        });
-
-        if (expiringProducts.length > 0) {
-          console.log('Notificação sobre produtos próximos ao vencimento.');
-          try {
-            // Agendar notificações aleatórias para produtos próximos ao vencimento
-            await this.scheduleExpiringProductsNotifications();
-          } catch (notificationError) {
-            console.error('Erro ao agendar notificações aleatórias de produtos próximos ao vencimento:', notificationError);
-          }
-        }
+      
+      if (!userId) {
+        console.log('Nenhum usuário logado.');
+        return;
       }
+
+      if (lastNotificationDate === currentDate) {
+        console.log(`Notificações já foram agendadas hoje para o usuário: ${userId}`);
+        return;
+      }
+
+      // Buscar produtos próximos ao vencimento para o usuário específico
+      const response = await axios.get(`http://192.168.24.17:3000/pre-expiry-products/${userId}`);
+      console.log(`Resposta do servidor para o usuário ${userId}:`, response.data);
+      const products = response.data;
+
+      const expiringProducts = products.filter(product => {
+        const expiryDate = new Date(product.expiry_date);
+        const now = new Date();
+        const daysLeft = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+        return daysLeft <= 5;
+      });
+
+      console.log('Produtos próximos ao vencimento:', expiringProducts);
+
+      if (expiringProducts.length > 0) {
+        console.log('Notificação sobre produtos próximos ao vencimento.');
+        await this.scheduleExpiringProductsNotifications();
+      }
+
+      // Atualiza a data da última notificação para hoje
+      await AsyncStorage.setItem('lastNotificationDate', currentDate);
     } catch (error) {
       console.error('Erro ao buscar produtos próximos ao vencimento:', error);
     }
   };
 
-  // Função para agendar notificações em horários aleatórios dentro de intervalos específicos
   scheduleRandomNotifications = async () => {
     try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) {
+        console.log('Nenhum usuário logado.');
+        return;
+      }
+
       const intervals = [
         { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 },     // Café da manhã
         { startHour: 11, startMinute: 30, endHour: 12, endMinute: 30 }, // Almoço
@@ -80,7 +98,6 @@ class NotificationService {
       for (const interval of intervals) {
         const randomTime = this.getRandomTime(interval.startHour, interval.startMinute, interval.endHour, interval.endMinute);
 
-        // Formatar o horário e minuto com dois dígitos
         const formattedHour = String(randomTime.hour).padStart(2, '0');
         const formattedMinute = String(randomTime.minute).padStart(2, '0');
 
@@ -105,9 +122,14 @@ class NotificationService {
     }
   };
 
-  // Função para agendar notificações aleatórias para produtos próximos ao vencimento
   scheduleExpiringProductsNotifications = async () => {
     try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) {
+        console.log('Nenhum usuário logado.');
+        return;
+      }
+
       const intervals = [
         { startHour: 7, startMinute: 0, endHour: 8, endMinute: 0 },     // Café da manhã
         { startHour: 11, startMinute: 30, endHour: 12, endMinute: 30 }, // Almoço
@@ -117,7 +139,6 @@ class NotificationService {
       for (const interval of intervals) {
         const randomTime = this.getRandomTime(interval.startHour, interval.startMinute, interval.endHour, interval.endMinute);
 
-        // Formatar o horário e minuto com dois dígitos
         const formattedHour = String(randomTime.hour).padStart(2, '0');
         const formattedMinute = String(randomTime.minute).padStart(2, '0');
 
@@ -142,7 +163,6 @@ class NotificationService {
     }
   };
 
-  // Função para gerar um horário aleatório dentro de um intervalo específico
   getRandomTime = (startHour, startMinute, endHour, endMinute) => {
     const start = new Date();
     start.setHours(startHour, startMinute, 0, 0);
@@ -158,7 +178,6 @@ class NotificationService {
     };
   };
 
-  // Função para cancelar todas as notificações
   cancelAllNotifications = async () => {
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
@@ -185,5 +204,6 @@ class NotificationService {
   //   }
   // };
 
-const notificationService = new NotificationService();
-export default notificationService;
+  const notificationService = new NotificationService();
+  export default notificationService;
+  
