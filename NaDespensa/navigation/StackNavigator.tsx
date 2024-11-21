@@ -15,6 +15,7 @@ import CreateNewPassowrd from '../screens/CreateNewPassword';
 import BarcodeScannerScreen from '../screens/BarcodeScanner';
 import Profile from '../screens/Profile';
 import Config from '../screens/Config';
+import Saves from '../screens/Saves';
 import Help from '../screens/Help';
 import SetNewPassword from '../screens/SetNewPassword'
 import SetNewEmail from '../screens/SetNewEmail'
@@ -41,6 +42,7 @@ const App = () => {
         <Stack.Screen name="Recipes" component={RecipeListScreen} options={{ title: 'Receitas' }} />
         <Stack.Screen name="Profile" component={Profile} options={{ title: 'Perfil' }} />
         <Stack.Screen name="Config" component={Config} options={{ title: 'Configurações' }} />
+        <Stack.Screen name="Saves" component={Saves} options={{ title: 'Salvos' }} />
         <Stack.Screen name="Help" component={Help} options={{ title: 'Ajuda' }} />
         <Stack.Screen name='SetNewPassword' component={SetNewPassword} options={{ title: 'Alterar Senha' }} />
         <Stack.Screen name='SetNewEmail' component={SetNewEmail} options={{ title: 'Alterar E-mail' }} />

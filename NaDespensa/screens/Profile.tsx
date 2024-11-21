@@ -30,7 +30,7 @@ const ProfileScreen = ({ navigation, route }) => {
         <Text style={styles.buttonText}>Sua Despensa</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => handleNavigate('Salvos')}>
+      <TouchableOpacity style={styles.button} onPress={() => handleNavigate('Saves')}>
         <Text style={styles.buttonText}>Salvos</Text>
       </TouchableOpacity>
 

@@ -3,31 +3,19 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, ActivityIn
 import axios from 'axios';
 
 const parseRecipesFromText = (text) => {
-  // Divide o texto em seções de receita baseadas no formato ## Título ##
   const recipeSections = text.split(/(?=##\s*.*?\s*##)/).filter(section => section.trim() !== '');
-
   return recipeSections.map((section, index) => {
-    // Extrai o título no formato ## Título ##
     const titleMatch = section.match(/##\s*(.*?)\s*##/);
     const title = titleMatch ? titleMatch[1].trim() : `Receita ${index + 1}`;
-
-    // Extrai o conteúdo no formato **Conteúdo**, incluindo ingredientes e preparo
     const contentStartIndex = section.indexOf("**");
     let recipeContent = contentStartIndex !== -1 ? section.substring(contentStartIndex).trim() : '';
-
-    // Remove os asteriscos ** do conteúdo
     recipeContent = recipeContent.replace(/\*\*(.*?)\*\*/g, "-$1");
-
-    console.log("Título da receita:", title);
-    console.log("Conteúdo da receita:", recipeContent);
-
     return {
       title,
       content: recipeContent
     };
   });
 };
-
 
 const RecipesScreen = ({ route, navigation }) => {
   const { userId } = route.params;
@@ -37,13 +25,14 @@ const RecipesScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showRecipes, setShowRecipes] = useState(false);
-  const [visibleRecipes, setVisibleRecipes] = useState(10); // Estado para controlar quantas receitas são exibidas
-  const [exclusive, setExclusive] = useState(false); // Novo estado para controle de exclusividade
+  const [visibleRecipes, setVisibleRecipes] = useState(10);
+  const [exclusive, setExclusive] = useState(false);
+  const [savedRecipes, setSavedRecipes] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`http://192.168.24.17:3000/users/${userId}/products`);
+        const response = await axios.get(`http://192.168.24.5:3000/users/${userId}/products`);
         const productNames = response.data.map(product => ({ name: product.name, isSelected: false }));
         setProducts(productNames);
       } catch (error) {
@@ -51,11 +40,8 @@ const RecipesScreen = ({ route, navigation }) => {
         Alert.alert('Erro', 'Não foi possível carregar os produtos.');
       }
     };
-
     fetchProducts();
-    navigation.setOptions({
-      headerShown: false,
-    });
+    navigation.setOptions({ headerShown: false });
   }, [userId]);
 
   const handleNavigate = (screen) => {
@@ -78,17 +64,15 @@ const RecipesScreen = ({ route, navigation }) => {
     setLoading(true);
     setError(null);
 
-    console.log('Ingredientes selecionados:', selectedIngredientsNames);
-
     try {
-      const endpoint = exclusive ? 'http://192.168.24.17:3000/recipes/exclusive' : 'http://192.168.24.17:3000/recipes';
+      const endpoint = exclusive ? 'http://192.168.24.5:3000/recipes/exclusive' : 'http://192.168.24.5:3000/recipes';
       const response = await axios.post(endpoint, { 
         ingredients: selectedIngredientsNames
       });
       const recipesData = parseRecipesFromText(response.data.recipe);
       setRecipes(recipesData);
       setShowRecipes(true);
-      setVisibleRecipes(3); // Resetar o número de receitas visíveis ao buscar novas receitas
+      setVisibleRecipes(3);
     } catch (error) {
       console.error('Erro ao buscar receitas:', error);
       Alert.alert('Erro', 'Não foi possível gerar receitas.');
@@ -96,6 +80,42 @@ const RecipesScreen = ({ route, navigation }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+    const saveRecipe = async (userId, title, content, index) => {
+    Alert.alert(
+      'Confirmar',
+      'Você tem certeza que deseja salvar esta receita?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Salvar',
+          onPress: async () => {
+            try {
+              console.log('Enviando dados:', { userId, title, content });
+              const response = await axios.post('http://192.168.24.5:3000/save-recipe', {
+                userId: userId,
+                title: title,
+                content: content,
+              });
+        
+              if (response.data.success) {
+                console.log('Receita salva com sucesso, ID da receita:', response.data.recipeId);
+                Alert.alert('Sucesso', 'Receita salva com sucesso!');
+                setSavedRecipes(prevSaved => [...prevSaved, title]);
+              }
+            } catch (error) {
+              console.error('Erro ao salvar receita:', error.response ? error.response.data : error.message);
+              Alert.alert('Erro', 'Falha ao salvar a receita.');
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const loadMoreRecipes = () => {
@@ -108,52 +128,38 @@ const RecipesScreen = ({ route, navigation }) => {
     return (
       <View style={styles.container}>
         <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-        <TouchableOpacity onPress={() => setShowRecipes(false)}  style={styles.backContainer}>
+        <TouchableOpacity onPress={() => setShowRecipes(false)} style={styles.backContainer}>
           <Image style={styles.back} source={require('../assets/back.png')} />
           <Text style={styles.voltar}>Voltar</Text>
         </TouchableOpacity>
         <ScrollView style={styles.scrollView}>
           {recipes.length > 0 ? (
-            recipes.slice(0, visibleRecipes).map((recipe, index) => ( // Mostrar apenas o número de receitas visíveis
+            recipes.slice(0, visibleRecipes).map((recipe, index) => (
               <View key={index} style={styles.recipeCard}>
+                <TouchableOpacity 
+                  style={styles.saveButton}
+                  onPress={() => saveRecipe(userId, recipe.title, recipe.content)}
+                >
+                  <Image 
+                    style={styles.saveImage} 
+                    source={savedRecipes.includes(recipe.title) ? require('../assets/save-green.png') : require('../assets/save-black.png')} 
+                  />
+                <Text style={styles.saveButtonText}>Salvar</Text>      
+                </TouchableOpacity>  
                 <Text style={styles.recipeTitle}>{recipe.title}</Text>
                 <Text style={styles.recipeContent}>{recipe.content}</Text>
+                
               </View>
             ))
           ) : (
             <Text style={styles.noRecipesText}>Nenhuma receita encontrada.</Text>
           )}
         </ScrollView>
-        {visibleRecipes < recipes.length && ( // Mostrar o botão "Gerar mais receitas" apenas se houver mais receitas para mostrar
+        {visibleRecipes < recipes.length && (
           <TouchableOpacity onPress={loadMoreRecipes} style={styles.loadMoreButton}>
             <Text style={styles.loadMoreButtonText}>Gerar mais receitas</Text>
           </TouchableOpacity>
         )}
-      </View>
-    );
-  }
-
-  if (products.length === 0) {
-    return (
-      <View style={styles.container}>
-        <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-        <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
-          <Image style={styles.back} source={require('../assets/back.png')} />
-          <Text style={styles.voltar}>Voltar</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Receitas</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#98FB98',}}></View>
-        <View style={styles.emptyContainer}>
-          <Image source={require('../assets/imageRecipes.png')} style={styles.emptyImage} />
-          <Text style={styles.emptyText}>Nenhum produto disponível</Text>
-          <Text style={styles.suggestionText}>Adicione produtos para buscar receitas.</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('AddProduct', { userId })}
-          style={styles.addButton}
-        >
-          <Text style={styles.addButtonText}>Adicionar Produto</Text>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -174,7 +180,6 @@ const RecipesScreen = ({ route, navigation }) => {
           onValueChange={() => setExclusive(!exclusive)}
           trackColor={{ false: '#C0C0C0', true: '#3CB371' }}
           thumbColor="#FFF"
-          style={{ marginTop: '-11%', marginBottom: 10, alignSelf: 'flex-end' }}
         />
       </View>
       <ScrollView style={styles.ingredientsContainer}>
@@ -197,10 +202,11 @@ const RecipesScreen = ({ route, navigation }) => {
       </TouchableOpacity>
       {loading && (
         <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#3CB371" style={styles.loader} />
+          <ActivityIndicator size="large" color="#3CB371" />
         </View>
       )}
       {error && <Text style={styles.errorText}>{error}</Text>}
+      
     </View>
   );
 };
@@ -324,6 +330,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    width: '90%',
   },
   recipeContent: {
     fontSize: 14,
@@ -401,6 +408,31 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginTop: 10,
+  },
+  saveImage: {
+    padding: 10,
+    position: 'absolute',
+    alignSelf: 'center',
+    top: -10,
+    right: 18,
+    width: 20,
+    height: 20,
+  },
+  saveButton: {
+    padding: 10,
+    paddingTop: 15,
+    borderRadius: 5,
+    marginBottom: 10,
+    right: 0,
+    marginTop: 25,
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    alignContent: 'flex-end',
+    textAlign: 'center',
+  },
+  saveButtonText: {
+    color: '#000',
+    textAlign: 'center',
   },
 });
 
