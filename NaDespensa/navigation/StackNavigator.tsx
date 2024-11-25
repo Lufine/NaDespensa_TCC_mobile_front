@@ -11,6 +11,7 @@ import AddProductScreen from '../screens/AddProductScreen';
 import EditProductScreen from '../screens/EditProductScreen';
 import RecipeListScreen from '../screens/RecipeListScreen';
 import ForgotPassword from '../screens/ForgotPassword';
+import InsertCode from '../screens/InsertCode';
 import CreateNewPassowrd from '../screens/CreateNewPassword';
 import BarcodeScannerScreen from '../screens/BarcodeScanner';
 import Profile from '../screens/Profile';
@@ -31,6 +32,7 @@ const App = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Registrar' }}/>
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ title: 'Esqueceu a senha' }}/>
+        <Stack.Screen name="InsertCode" component={InsertCode} options={{ title: 'Inserir Código' }}/>
         <Stack.Screen name="CreateNewPassword" component={CreateNewPassowrd} options={{ title: 'Criar nova senha' }}/>
         <Stack.Screen name="Dashboard" component={DashboardScreen} options={{ title: 'Dashboard' }}/>
         <Stack.Screen name="ProductList" component={ProductListScreen} options={{ title: 'Lista de Produtos' }}/>

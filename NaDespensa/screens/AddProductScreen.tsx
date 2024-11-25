@@ -93,7 +93,7 @@ const AddProductScreen = ({ route, navigation }) => {
     }
 
     try {
-      const productResponse = await axios.post('http://192.168.24.17:3000/products', {
+      const productResponse = await axios.post('http://192.168.24.5:3000/products', {
         name,
         price: parseFloat(price),
         thumbnail,
@@ -102,7 +102,7 @@ const AddProductScreen = ({ route, navigation }) => {
 
       const productId = productResponse.data.id;
 
-      await axios.post('http://192.168.24.17:3000/users-products', {
+      await axios.post('http://192.168.24.5:3000/users-products', {
         quantity: parseInt(quantity, 10),
         expiry_date: formattedDate,
         price: parseFloat(price),
@@ -110,7 +110,7 @@ const AddProductScreen = ({ route, navigation }) => {
         product_id: productId,
       });
 
-      const response = await axios.get(`http://192.168.24.17:3000/users/${userId}/products`);
+      const response = await axios.get(`http://192.168.24.5:3000/users/${userId}/products`);
       const updatedProducts = response.data;
 
       navigation.navigate('ProductList', { userId, products: updatedProducts });

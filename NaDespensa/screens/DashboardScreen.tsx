@@ -31,7 +31,7 @@ const DashboardScreen = ({ route, navigation }) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`http://192.168.24.17:3000/users/${userId}`);
+      const response = await axios.get(`http://192.168.24.5:3000/users/${userId}`);
       setUserData(response.data);
     } catch (error) {
       console.error('Erro ao buscar dados do usuário:', error);
@@ -41,8 +41,8 @@ const DashboardScreen = ({ route, navigation }) => {
 
   const fetchItemCounts = async () => {
     try {
-      const expiredResponse = await axios.get(`http://192.168.24.17:3000/expiry-products-count/${userId}`);
-      const nearExpiryResponse = await axios.get(`http://192.168.24.17:3000/pre-expiry-products-count/${userId}`);
+      const expiredResponse = await axios.get(`http://192.168.24.5:3000/expiry-products-count/${userId}`);
+      const nearExpiryResponse = await axios.get(`http://192.168.24.5:3000/pre-expiry-products-count/${userId}`);
 
       setExpiredItemsCount(expiredResponse.data.count);
       setNearExpiryItemsCount(nearExpiryResponse.data.count);

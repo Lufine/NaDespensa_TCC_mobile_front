@@ -1,121 +1,122 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { 
+  View, Text, Image, TextInput, TouchableOpacity, StyleSheet, 
+  Alert, ScrollView, KeyboardAvoidingView, Platform 
+} from 'react-native';
 import axios from 'axios';
 
 const CreateNewPassword = ({ navigation, route }) => {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
-//   const { email } = route.params; // Email do usuário passado via navegação
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
-const handleResetPassword = async () => {
-    if (!newPassword || !confirmPassword) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
-      return;
-    }
+    const { email } = route.params;
 
-    if (newPassword !== confirmPassword) {
-      Alert.alert('Erro', 'As senhas não coincidem');
-      return;
-    }
+    const handleResetPassword = async () => {
+        if (!newPassword || !confirmPassword) {
+            Alert.alert('Erro', 'Por favor, preencha todos os campos');
+            return;
+        }
+    
+        if (newPassword !== confirmPassword) {
+            Alert.alert('Erro', 'As senhas não coincidem');
+            return;
+        }
+    
+        try {
+            // Substitua "route.params.resetCode" pelo token correto recebido na tela anterior
+            const { resetCode } = route.params;
+    
+            const response = await axios.post('http://192.168.24.5:3000/reset-password', {
+                resetCode,
+                newPassword, // Mudamos para usar `newPassword` diretamente
+            });
+    
+            if (response.data.success) {
+                Alert.alert('Sucesso', 'Senha alterada com sucesso');
+                navigation.navigate('Login');
+            } else {
+                Alert.alert('Erro', response.data.error || 'Não foi possível alterar a senha.');
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Erro', 'Ocorreu um erro. Tente novamente.');
+        }
+    };
+    
 
-    try {
-      const response = await axios.post('http://192.168.24.17:3000/reset-password', {
-        email,
-        newPassword
-      });
+    useEffect(() => {
+        navigation.setOptions({ headerShown: false });
+    }, [navigation]);
 
-      if (response.data.success) {
-        Alert.alert('Sucesso', 'Senha alterada com sucesso');
-        navigation.navigate('Login');
-      } else {
-        Alert.alert('Erro', 'Não foi possível alterar a senha. Tente novamente.');
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Erro', 'Ocorreu um erro. Tente novamente.');
-    }
-  };
-  
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, [navigation]);
-
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
-  };
-
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.container2}>
-        <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Image style={styles.back} source={require('../assets/back.png')} />
-              <Text style={styles.voltar}>Voltar</Text>
-          </TouchableOpacity>
-        <Text style={styles.title}>Crie uma nova senha</Text>
-        <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Senha"
-              value={newPassword}
-              onChangeText={setNewPassword}
-              style={styles.input}
-              secureTextEntry={!isPasswordVisible}
-            />
-            <Image style={styles.userLogo} source={require('../assets/cadeado.png')} />
-            <TouchableOpacity onPress={togglePasswordVisibility}>
-              <Image
-                style={styles.userLogoShow}
-                source={isPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
-              />
-            </TouchableOpacity>
-          </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Confirme a nova senha"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            style={styles.input}
-            secureTextEntry={!isConfirmPasswordVisible}
-          />
-          <Image style={styles.userLogo} source={require('../assets/cadeado.png')} />
-            <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
-              <Image
-                style={styles.userLogoShow}
-                source={isConfirmPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
-              />
-            </TouchableOpacity>
-        </View>
-        <View>
-          <Image style={styles.iconInfo} source={require('../assets/info.png')} />
-          <Text style={styles.passwordInfoTitle}>Para uma senha forte:</Text>
-        </View>
-        <Text style={styles.passwordInfo}>
-          {'\n'}• Senha deve ter no mínimo 8 caracteres;
-          {'\n'}• Conter pelo menos 1 (um) número;
-          {'\n'}• Conter pelo menos 1 (uma) letra maiúscula;
-          {'\n'}• Conter pelo menos 1 (uma) letra minúscula.
-        </Text>
-        <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
-          <Text style={styles.buttonText}>Enviar</Text>
-        </TouchableOpacity>
-        <View>
-            <Image style={styles.iconInfo} source={require('../assets/info.png')} />
-            <Text style={styles.passwordInfoTitle}>
-              É necessário que todos os dispositivos acessem sua conta com a nova senha.
-            </Text>
-        </View>
-        <Image style={styles.designunder} source={require('../assets/designunder.png')} />
-      </View>
-    </ScrollView>
-  );
+    return (
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <ScrollView contentContainerStyle={styles.container2}>
+                <Image style={styles.design} source={require('../assets/desingtopright.png')} />
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Image style={styles.back} source={require('../assets/back.png')} />
+                    <Text style={styles.voltar}>Voltar</Text>
+                </TouchableOpacity>
+                <Text style={styles.title}>Crie uma nova senha</Text>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder="Senha"
+                        value={newPassword}
+                        onChangeText={setNewPassword}
+                        style={styles.input}
+                        secureTextEntry={!isPasswordVisible}
+                    />
+                    <Image style={styles.userLogo} source={require('../assets/cadeado.png')} />
+                    <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                        <Image
+                            style={styles.userLogoShow}
+                            source={isPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder="Confirme a nova senha"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        style={styles.input}
+                        secureTextEntry={!isConfirmPasswordVisible}
+                    />
+                    <Image style={styles.userLogo} source={require('../assets/cadeado.png')} />
+                    <TouchableOpacity onPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}>
+                        <Image
+                            style={styles.userLogoShow}
+                            source={isConfirmPasswordVisible ? require('../assets/hidepass.png') : require('../assets/showpass.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <Image style={styles.iconInfo} source={require('../assets/info.png')} />
+                    <Text style={styles.passwordInfoTitle}>Para uma senha forte:</Text>
+                </View>
+                <Text style={styles.passwordInfo}>
+                    {'\n'}• Senha deve ter no mínimo 8 caracteres;
+                    {'\n'}• Conter pelo menos 1 (um) número;
+                    {'\n'}• Conter pelo menos 1 (uma) letra maiúscula;
+                    {'\n'}• Conter pelo menos 1 (uma) letra minúscula.
+                </Text>
+                <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
+                    <Text style={styles.buttonText}>Enviar</Text>
+                </TouchableOpacity>
+                <View>
+                    <Image style={styles.iconInfo} source={require('../assets/info.png')} />
+                    <Text style={styles.passwordInfoTitle}>
+                        É necessário que todos os dispositivos acessem sua conta com a nova senha.
+                    </Text>
+                </View>
+                <Image style={styles.designunder} source={require('../assets/designunder.png')} />
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
 };
 
 const styles = StyleSheet.create({

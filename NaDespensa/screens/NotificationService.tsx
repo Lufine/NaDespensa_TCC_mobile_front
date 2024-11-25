@@ -56,7 +56,7 @@ class NotificationService {
       }
 
       // Buscar produtos próximos ao vencimento para o usuário específico
-      const response = await axios.get(`http://192.168.24.17:3000/pre-expiry-products/${userId}`);
+      const response = await axios.get(`http://192.168.24.5:3000/pre-expiry-products/${userId}`);
       console.log(`Resposta do servidor para o usuário ${userId}:`, response.data);
       const products = response.data;
 

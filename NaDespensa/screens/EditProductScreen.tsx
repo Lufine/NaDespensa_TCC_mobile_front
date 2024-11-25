@@ -56,14 +56,14 @@ const EditProductScreen = ({ route, navigation }) => {
     }
 
     try {
-      await axios.put(`http://192.168.24.17:3000/users-products/${product.id}`, {
+      await axios.put(`http://192.168.24.5:3000/users-products/${product.id}`, {
         name,
         quantity,
         expiry_date: formattedDate,
       });
 
       // Atualize a lista de produtos após a edição
-      const response = await axios.get(`http://192.168.24.17:3000/users-products/${userId}`);
+      const response = await axios.get(`http://192.168.24.5:3000/users-products/${userId}`);
       const updatedProducts = response.data;
 
       // Voltar à tela anterior e passar os produtos atualizados

@@ -13,7 +13,7 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`http://192.168.24.17:3000/pre-expiry-products/${userId}`);
+      const response = await axios.get(`http://192.168.24.5:3000/pre-expiry-products/${userId}`);
       setProducts(response.data);
       setFilteredProducts(response.data);
     } catch (error) {
@@ -67,7 +67,7 @@ const PreExpiryProductListScreen = ({ route, navigation }) => {
           text: "Sim",
           onPress: async () => {
             try {
-              const response = await axios.delete(`http://192.168.24.17:3000/products/${productId}`);
+              const response = await axios.delete(`http://192.168.24.5:3000/products/${productId}`);
               if (response.data.success) {
                 setProducts(products.filter((product) => product.id !== productId));
                 setFilteredProducts(filteredProducts.filter((product) => product.id !== productId));

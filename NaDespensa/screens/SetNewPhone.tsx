@@ -55,7 +55,7 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
       }
 
       try {
-        const response = await axios.put(`http://192.168.24.17:3000/users/${userId}/change-phone-number`, {
+        const response = await axios.put(`http://192.168.24.5:3000/users/${userId}/change-phone-number`, {
           currentPassword,
           newPhoneNumber,
         });

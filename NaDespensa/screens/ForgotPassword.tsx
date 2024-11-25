@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Button, KeyboardAvoidingView, Platform } from 'react-native';
+import { 
+  View, Text, Image, TextInput, TouchableOpacity, 
+  StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform 
+} from 'react-native';
 import axios from 'axios';
-import CreateNewPassword from './CreateNewPassword';
 
 const ForgotPassword = ({ navigation }) => {
     const [email, setEmail] = useState('');
-  
+
     const handleForgotPassword = async () => {
         if (!email) {
             Alert.alert('Erro', 'Por favor, insira seu email');
             return;
         }
-  
+
         try {
-            const response = await axios.post('http://192.168.24.17:3000/forgot-password', { email });
-  
+            const response = await axios.post('http://192.168.24.5:3000/forgot-password', { email });
+
             if (response.data.success) {
-                Alert.alert('Sucesso', 'Instruções para redefinir a senha foram enviadas para seu email');
-                navigation.goBack();
+                Alert.alert(
+                    'Sucesso', 
+                    'Instruções para redefinir a senha foram enviadas para seu email',
+                    [{ text: 'OK', onPress: () => navigation.navigate('InsertCode', { email }) }]
+                );
             } else {
                 Alert.alert('Erro', 'Não foi possível enviar as instruções. Tente novamente.');
             }
@@ -29,18 +34,17 @@ const ForgotPassword = ({ navigation }) => {
             }
             console.error(error);
         }
+        const response = await axios.post('http://192.168.24.5:3000/send-reset-email', { email });
+
+        console.log(response.data);
     };
 
-    const handleNavigate = (screen) => {
-      navigation.navigate(screen);
-    };
+
 
     useEffect(() => {
-        navigation.setOptions({
-            headerShown: false,
-        });
+        navigation.setOptions({ headerShown: false });
     }, [navigation]);
-  
+
     return (
         <KeyboardAvoidingView
             style={styles.container}
@@ -61,18 +65,15 @@ const ForgotPassword = ({ navigation }) => {
                         onChangeText={setEmail}
                         style={styles.input}
                         keyboardType="email-address"
+                        autoCapitalize="none"
                     />
                     <Image style={styles.icon} source={require('../assets/email.png')} />
                 </View>
                 <TouchableOpacity style={styles.button} onPress={handleForgotPassword}>
                     <Text style={styles.buttonText}>Enviar</Text>
                 </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={() => handleNavigate('CreateNewPassword')}>
-                <Text style={styles.buttonText}>TESTE TELA SENHA</Text>
-              </TouchableOpacity>
                 <Image style={styles.designunder} source={require('../assets/designunder.png')} />
             </ScrollView>
-            
         </KeyboardAvoidingView>
     );
 };

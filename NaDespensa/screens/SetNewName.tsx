@@ -23,7 +23,7 @@ const ChangeUsernameScreen = ({ navigation, route }) => {
         }
 
         try {
-            const response = await axios.post('http://192.168.24.17:3000/check-username', { nome: username });
+            const response = await axios.post('http://192.168.24.5:3000/check-username', { nome: username });
             return response.data.isAvailable;
         } catch (error) {
             console.error('Erro ao verificar nome de usuário:', error);
@@ -50,7 +50,7 @@ const ChangeUsernameScreen = ({ navigation, route }) => {
         }
 
         try {
-            const response = await axios.put(`http://192.168.24.17:3000/users/${userId}/change-username`, {
+            const response = await axios.put(`http://192.168.24.5:3000/users/${userId}/change-username`, {
                 currentPassword,
                 newUsername,
             });

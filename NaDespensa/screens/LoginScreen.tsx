@@ -22,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
       const sanitizedEmailOrUsername = emailOrUsername.trim();
       const sanitizedSenha = senha.trim();
   
-      const response = await axios.post('http://192.168.24.17:3000/login', { emailOrUsername: sanitizedEmailOrUsername, senha: sanitizedSenha });
+      const response = await axios.post('http://192.168.24.5:3000/login', { emailOrUsername: sanitizedEmailOrUsername, senha: sanitizedSenha });
       
       if (response.data.success) {
         // Armazenar o userId

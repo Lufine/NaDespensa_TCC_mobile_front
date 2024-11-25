@@ -24,7 +24,7 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.24.17:3000/check-username', { nome: username });
+      const response = await axios.post('http://192.168.24.5:3000/check-username', { nome: username });
       return response.data.isAvailable;
     } catch (error) {
       console.error('Error checking username:', error);
@@ -129,7 +129,7 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.24.17:3000/register', {
+      const response = await axios.post('http://192.168.24.5:3000/register', {
         nome,
         email,
         dataNascimento,
