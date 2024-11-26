@@ -65,11 +65,11 @@ const Saves = ({ navigation, route }) => {
       'Você tem certeza que deseja excluir esta receita?',
       [
         {
-          text: 'Cancelar',
+          text: 'Não',
           style: 'cancel',
         },
         {
-          text: 'Excluir',
+          text: 'Sim',
           style: 'destructive',
           onPress: () => handleRemoveItem(id),
         },

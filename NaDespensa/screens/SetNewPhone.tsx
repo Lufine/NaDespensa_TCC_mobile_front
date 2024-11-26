@@ -4,8 +4,9 @@ import axios from 'axios';
 
 // Função de validação de telefone no formato (XX) XXXXX-XXXX
 const isValidPhoneNumber = (phoneNumber) => {
-  const regex = /^\d{11}$/; // Modificar para o formato desejado se necessário
-  return regex.test(phoneNumber);
+  const cleanedPhoneNumber = phoneNumber.replace(/\D/g, ''); // Remove tudo que não é número
+  const regex = /^\d{11}$/; // Exige exatamente 11 dígitos
+  return regex.test(cleanedPhoneNumber);
 };
 
 const ChangePhoneNumberScreen = ({ navigation, route }) => {
@@ -51,7 +52,10 @@ const ChangePhoneNumberScreen = ({ navigation, route }) => {
 
       if (!isValidPhoneNumber(newPhoneNumber)) {
         Alert.alert('Erro', 'Número de telefone inválido. Deve ter 11 dígitos.');
+        console.log('Número inserido:', newPhoneNumber);
         return;
+      } else {
+        console.log('Número válido:', newPhoneNumber.replace(/\D/g, '')); // Exibe o número limpo
       }
 
       try {

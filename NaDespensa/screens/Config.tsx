@@ -48,11 +48,11 @@ const SettingsScreen = ({ route, navigation }) => {
       `Você deseja ${isEnabled ? 'desativar' : 'ativar'} as notificações?`,
       [
         {
-          text: "Cancelar",
+          text: "Não",
           style: "cancel",
         },
         {
-          text: "Confirmar",
+          text: "Sim",
           onPress: async () => {
             const newValue = !isEnabled;
             setIsEnabled(newValue);
