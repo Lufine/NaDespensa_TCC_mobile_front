@@ -13,6 +13,14 @@ const CreateNewPassword = ({ navigation, route }) => {
 
     const { email } = route.params;
 
+    const validatePassword = (password) => {
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        const hasMinLength = password.length >= 8;
+        return hasUpperCase && hasLowerCase && hasNumber && hasMinLength;
+      };
+
     const handleResetPassword = async () => {
         if (!newPassword || !confirmPassword) {
             Alert.alert('Erro', 'Por favor, preencha todos os campos');
@@ -20,9 +28,14 @@ const CreateNewPassword = ({ navigation, route }) => {
         }
     
         if (newPassword !== confirmPassword) {
-            Alert.alert('Erro', 'As senhas não coincidem');
+            Alert.alert('Senha Inválida', 'As senhas não coincidem');
             return;
         }
+
+        if (!validatePassword(newPassword)) {
+            Alert.alert('Senha Inválida', 'A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma letra minúscula e um número.');
+            return;
+          }
     
         try {
             // Substitua "route.params.resetCode" pelo token correto recebido na tela anterior
