@@ -5,7 +5,7 @@ import axios from 'axios';
 const RegisterScreen = ({ navigation }) => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [dataNascimento, setDataNascimento] = useState('');
+  const [idade, setIdade] = useState('');
   const [telefone, setTelefone] = useState('');
   const [senha, setSenha] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -94,7 +94,7 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   const handleRegister = async () => {
-    if (!nome || !email || !dataNascimento || !telefone || !senha) {
+    if (!nome || !email || !idade || !telefone || !senha) {
       Alert.alert('Erro', 'Todos os campos são obrigatórios');
       return;
     }
@@ -109,7 +109,7 @@ const RegisterScreen = ({ navigation }) => {
       return;
     }
 
-    if (!isValidDateOfBirth(dataNascimento)) {
+    if (!isValidDateOfBirth(idade)) {
       Alert.alert('Erro', 'Data de nascimento inválida. Use o formato DD-MM-AAAA ou DD/MM/AAAA.');
       return;
     }
@@ -132,7 +132,7 @@ const RegisterScreen = ({ navigation }) => {
       const response = await axios.post('http://192.168.24.5:3000/register', {
         nome,
         email,
-        dataNascimento,
+        idade,
         telefone,
         senha,
       });
@@ -185,8 +185,8 @@ const RegisterScreen = ({ navigation }) => {
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="Data de nascimento"
-            value={dataNascimento}
-            onChangeText={(text) => setDataNascimento(formatDate(text))}
+            value={idade}
+            onChangeText={(text) => setIdade(formatDate(text))}
             keyboardType="number-pad"
             style={styles.input}
           />
