@@ -167,7 +167,7 @@ const RecipesScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-      <TouchableOpacity onPress={() => handleNavigate('Dashboard')} style={styles.backContainer}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>

@@ -38,9 +38,6 @@ const Saves = ({ navigation, route }) => {
       <Text style={styles.emptySubtitle}>
         Salve suas receitas favoritas para acessá-las facilmente depois!
       </Text>
-      <TouchableOpacity style={styles.continueButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.continueButtonText}>Sair</Text>
-      </TouchableOpacity>
     </View>
   );
 
@@ -106,7 +103,7 @@ const Saves = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Image style={styles.design} source={require('../assets/desingtopright.png')} />
-      <TouchableOpacity onPress={() => handleNavigate('Profile')} style={styles.backContainer}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backContainer}>
         <Image style={styles.back} source={require('../assets/back.png')} />
         <Text style={styles.voltar}>Voltar</Text>
       </TouchableOpacity>
@@ -173,6 +170,7 @@ const styles = StyleSheet.create({
     emptyImage: {
     width: 200,
     height: 200,
+    marginTop: '-30%',
     marginBottom: 16,
     },
     emptyTitle: {
@@ -185,16 +183,6 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 16,
-    },
-    continueButton: {
-    backgroundColor: '#4CAF50',
-    padding: 12,
-    borderRadius: 8,
-    },
-    continueButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
     },
     listContainer: {
     flex: 1,
