@@ -32,7 +32,7 @@ const RecipesScreen = ({ route, navigation }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`http://192.168.24.5:3000/users/${userId}/products`);
+        const response = await axios.get(`http://192.168.77.54:3000/users/${userId}/products`);
         const productNames = response.data.map(product => ({ name: product.name, isSelected: false }));
         setProducts(productNames);
       } catch (error) {
@@ -65,7 +65,7 @@ const RecipesScreen = ({ route, navigation }) => {
     setError(null);
 
     try {
-      const endpoint = exclusive ? 'http://192.168.24.5:3000/recipes/exclusive' : 'http://192.168.24.5:3000/recipes';
+      const endpoint = exclusive ? 'http://192.168.77.54:3000/recipes/exclusive' : 'http://192.168.77.54:3000/recipes';
       const response = await axios.post(endpoint, { 
         ingredients: selectedIngredientsNames
       });
@@ -96,7 +96,7 @@ const RecipesScreen = ({ route, navigation }) => {
           onPress: async () => {
             try {
               console.log('Enviando dados:', { userId, title, content });
-              const response = await axios.post('http://192.168.24.5:3000/save-recipe', {
+              const response = await axios.post('http://192.168.77.54:3000/save-recipe', {
                 userId: userId,
                 title: title,
                 content: content,
@@ -176,6 +176,7 @@ const RecipesScreen = ({ route, navigation }) => {
       <View style={styles.optionContainer}>
         <Text style={styles.optionText}>Receitas exclusivas para ingredientes selecionados?</Text>
         <Switch
+          style={{alignSelf: 'right', marginTop: -45}}
           value={exclusive}
           onValueChange={() => setExclusive(!exclusive)}
           trackColor={{ false: '#C0C0C0', true: '#3CB371' }}
