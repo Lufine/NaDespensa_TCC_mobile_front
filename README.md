@@ -28,17 +28,17 @@
 
 ## 📑 Sumário | Table of Contents
 
-- [📖 Visão Geral | Overview](#visão-geral--overview)
-- [✨ Funcionalidades | Features](#funcionalidades--features)
-- [🏗 Arquitetura | Architecture](#arquitetura--architecture)
-- [Protótipo no Figma | Figma Prototype](#capturas-de-tela--screenshots)
+- [📖 Visão Geral | Overview](#-visão-geral--overview)
+- [✨ Funcionalidades | Features](#-funcionalidades--features)
+- [🏗 Arquitetura | Architecture](#-arquitetura--architecture)
+- [Protótipo no Figma | Figma Prototype](#-protótipo-no-figma--figma-prototype)
 - [Documentação da API (Swagger) | API Documentation (Swagger)](#documentação-da-api-swagger--api-documentation-swagger)
 - [Roadmap & Futuras Melhorias | Roadmap & Future Enhancements](#roadmap--futuras-melhorias--roadmap--future-enhancements)
-- [🚀 Começando | Getting Started](#começando--getting-started)
-  - [✅ Pré-requisitos | Prerequisites](#pré-requisitos--prerequisites)
-  - [⚙️ Instalação | Installation](#instalação--installation)
-  - [▶️ Uso | Usage](#uso--usage)
-  - [🧪 Testes | Testing](#testes--testing)
+- [🚀 Começando | Getting Started](#-começando--getting-started)
+  - [✅ Pré-requisitos | Prerequisites](#-pré-requisitos--prerequisites)
+  - [⚙️ Instalação | Installation](#-instalação--installation)
+  - [▶️ Uso | Usage](#-uso--usage)
+  - [🧪 Testes | Testing](#-testes--testing)
 
 ---
 
