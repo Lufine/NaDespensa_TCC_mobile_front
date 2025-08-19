@@ -3,8 +3,7 @@
 <div align="center">
 
 <h2>NADESPENSA_TCC_MOBILE_FRONT</h2>
-<p><em>Aplicativo para Controle de Despensa e Redução de Desperdício</em></p>
-<p><em>Pantry Control and Waste Reduction App</em></p>
+<p><em>Aplicativo para Controle de Despensa e Redução de Desperdício<br>Pantry Control and Waste Reduction App</b></em></p>
 
 <img alt="last-commit" src="https://img.shields.io/github/last-commit/Lufine/NaDespensa_TCC_mobile_front?style=flat&logo=git&logoColor=white&color=0080ff">
 <img alt="repo-top-language" src="https://img.shields.io/github/languages/top/Lufine/NaDespensa_TCC_mobile_front?style=flat&color=0080ff">
