@@ -28,17 +28,17 @@
 
 ## 📑 Sumário | Table of Contents
 
-- [Visão Geral | Overview](#visão-geral--overview)  
-- [Funcionalidades | Features](#funcionalidades--features)  
-- [Arquitetura | Architecture](#arquitetura--architecture)  
-- [Capturas de Tela | Screenshots](#capturas-de-tela--screenshots)  
-- [Documentação da API (Swagger) | API Documentation (Swagger)](#documentação-da-api-swagger--api-documentation-swagger)  
-- [Roadmap & Futuras Melhorias | Roadmap & Future Enhancements](#roadmap--futuras-melhorias--roadmap--future-enhancements)  
-- [Começando | Getting Started](#começando--getting-started)  
-  - [Pré-requisitos | Prerequisites](#pré-requisitos--prerequisites)  
-  - [Instalação | Installation](#instalação--installation)  
-  - [Uso | Usage](#uso--usage)  
-  - [Testes | Testing](#testes--testing)  
+- [📖 Visão Geral | Overview](#visão-geral--overview)
+- [✨ Funcionalidades | Features](#funcionalidades--features)
+- [🏗 Arquitetura | Architecture](#arquitetura--architecture)
+- [Protótipo no Figma | Figma Prototype](#capturas-de-tela--screenshots)
+- [Documentação da API (Swagger) | API Documentation (Swagger)](#documentação-da-api-swagger--api-documentation-swagger)
+- [Roadmap & Futuras Melhorias | Roadmap & Future Enhancements](#roadmap--futuras-melhorias--roadmap--future-enhancements)
+- [🚀 Começando | Getting Started](#começando--getting-started)
+  - [✅ Pré-requisitos | Prerequisites](#pré-requisitos--prerequisites)
+  - [⚙️ Instalação | Installation](#instalação--installation)
+  - [▶️ Uso | Usage](#uso--usage)
+  - [🧪 Testes | Testing](#testes--testing)
 
 ---
 
@@ -139,4 +139,4 @@ Abra o aplicativo Expo Go no seu celular e escaneie o QR Code exibido no termina
 npm test
 ```
 
-<div align="center"> ⬆ [Voltar ao topo | Back to Top](#-nadespensa--mobile-frontend) </div>
+⬆ [Voltar ao topo | Back to Top](#-nadespensa--mobile-frontend) 
