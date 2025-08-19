@@ -98,11 +98,9 @@ This documentation provides all **API endpoints**, HTTP methods, request/respons
 
 | Funcionalidade | Status | Descrição |
 |----------------|--------|-----------|
-| Multi-usuário / Perfis |  Planejado | Permitir múltiplos perfis com configurações individuais |
+| Alertas customizáveis |  Feito | Notificações baseadas em quantidade, validade, etc. |
+| Gemini para receitas |  Feito | Sugestões de receitas dinâmicas com IA generativa |
 | Sincronização offline |  Em andamento | Salvar dados localmente com sincronização posterior |
-| Alertas customizáveis |  Planejado | Notificações baseadas em quantidade, validade, etc. |
-| Compartilhamento de despensas |  Em estudo | Compartilhar conteúdo da despensa entre usuários |
-| ChatGPT para receitas |  Futuro | Sugestões de receitas dinâmicas com IA generativa |
 
 ---
 
