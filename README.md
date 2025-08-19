@@ -31,7 +31,7 @@
 - [📖 Visão Geral | Overview](#-visão-geral--overview)
 - [✨ Funcionalidades | Features](#-funcionalidades--features)
 - [🏗 Arquitetura | Architecture](#-arquitetura--architecture)
-- [Protótipo no Figma | Figma Prototype](#-protótipo-no-figma--figma-prototype)
+- [Protótipo no Figma | Figma Prototype](#protótipo-no-figma--figma-prototype)
 - [Documentação da API (Swagger) | API Documentation (Swagger)](#documentação-da-api-swagger--api-documentation-swagger)
 - [Roadmap & Futuras Melhorias | Roadmap & Future Enhancements](#roadmap--futuras-melhorias--roadmap--future-enhancements)
 - [🚀 Começando | Getting Started](#-começando--getting-started)
