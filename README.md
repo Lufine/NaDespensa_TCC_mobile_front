@@ -98,8 +98,8 @@ This documentation provides all **API endpoints**, HTTP methods, request/respons
 
 | Funcionalidade | Status | Descrição |
 |----------------|--------|-----------|
-| Alertas customizáveis |  Feito | Notificações baseadas em quantidade, validade, etc. |
-| Gemini para receitas |  Feito | Sugestões de receitas dinâmicas com IA generativa |
+| Alertas customizáveis |  Realizado | Notificações baseadas em quantidade, validade, etc. |
+| Gemini para receitas |  Realizado | Sugestões de receitas dinâmicas com IA generativa |
 | Sincronização offline |  Em andamento | Salvar dados localmente com sincronização posterior |
 
 ---
