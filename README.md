@@ -131,7 +131,7 @@ npm install
 # Inicie o app em modo de desenvolvimento / Run the app
 npm start
 
-Abra o aplicativo Expo Go no seu celular e escaneie o QR Code exibido no terminal para iniciar.
+#Abra o aplicativo Expo Go no seu celular e escaneie o QR Code exibido no terminal para iniciar.
 
 ### 🧪 Testes | Testing
 
