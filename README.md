@@ -36,9 +36,9 @@
 - [Roadmap & Futuras Melhorias | Roadmap & Future Enhancements](#roadmap--futuras-melhorias--roadmap--future-enhancements)
 - [🚀 Começando | Getting Started](#-começando--getting-started)
   - [✅ Pré-requisitos | Prerequisites](#-pré-requisitos--prerequisites)
-  - [⚙️ Instalação | Installation](#-instalação--installation)
-  - [▶️ Uso | Usage](#-uso--usage)
-  - [🧪 Testes | Testing](#-testes--testing)
+  - [⚙️ Instalação | Installation](#-começando--getting-started)
+  - [▶️ Uso | Usage](#-começando--getting-started)
+  - [🧪 Testes | Testing](#-começando--getting-started)
 
 ---
 
